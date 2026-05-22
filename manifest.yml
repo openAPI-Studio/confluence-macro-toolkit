@@ -120,6 +120,21 @@ modules:
       resolver:
         function: resolver
 
+    - key: plantuml-macro
+      resource: plantuml-main
+      icon: resource:plantuml-main;icon.svg
+      title: PlantUML
+      description: Render UML diagrams from PlantUML syntax
+      categories:
+        - visuals
+      config:
+        resource: plantuml-config
+        viewportSize: fullscreen
+        title: PlantUML Editor
+        openOnInsert: true
+      resolver:
+        function: resolver
+
   confluence:globalSettings:
     - key: macro-settings
       resource: admin-page
@@ -167,6 +182,10 @@ resources:
     path: static/typewriter-macro/build
   - key: typewriter-config
     path: static/typewriter-config/build
+  - key: plantuml-main
+    path: static/plantuml-macro/build
+  - key: plantuml-config
+    path: static/plantuml-config/build
 
 app:
   id: ari:cloud:ecosystem::app/7e3d309e-e608-473a-acb3-103e5570a165
@@ -187,6 +206,7 @@ permissions:
     fetch:
       backend:
         - address: https://embed.diagrams.net
+        - address: https://www.plantuml.com
     frames:
       - address: https://embed.diagrams.net
     images:

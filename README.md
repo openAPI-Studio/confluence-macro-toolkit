@@ -14,7 +14,7 @@ A Forge app providing a collection of powerful macros for Atlassian Confluence.
 | **Mood** | Floating word cloud / emoji reactions visualization | Forge Storage |
 | **Graph / Chart** | Bar, line, pie, doughnut, area charts with Chart.js | Macro config |
 | **Typewriter** | Animate text with typewriter/word/line/fade effects | Macro config |
-| **Carousel / Slideshow** | Image slideshow with transitions and auto-play | Page Attachments |
+| **PlantUML** | Render UML diagrams from PlantUML syntax | Macro config |
 
 ## Features
 
@@ -47,8 +47,8 @@ confluence-macro-toolkit/
     ├── graph-config/               # Chart editor + live preview
     ├── typewriter-macro/           # Animated text render
     ├── typewriter-config/          # Text + style + speed + theme
-    ├── carousel-macro/             # Image slideshow
-    ├── carousel-config/            # Image upload + style options
+    ├── plantuml-macro/             # PlantUML SVG render
+    ├── plantuml-config/            # PlantUML code editor + preview
     └── admin-page/                 # Site-level macro toggle settings
 ```
 
@@ -186,19 +186,20 @@ forge install
 
 ---
 
-### Carousel / Slideshow
-**What it does:** Displays multiple images in an animated slideshow with navigation controls. Images are stored as page attachments for version control.
+### PlantUML
+**What it does:** Renders UML diagrams (sequence, class, activity, component, state, etc.) from PlantUML text syntax. Uses the public PlantUML server to convert text to SVG.
 
 **How to use:**
-1. Type `/Carousel` in the editor
-2. Upload images using the file picker, or select from existing page attachments
-3. Configure display options:
-   - **Button Style** — Arrows, Dots, Both, or None
-   - **Transition** — Slide, Fade, Zoom, or Flip
-   - **Auto-play** — toggle + set interval (2s/3s/5s/8s)
-   - **Loop** — toggle infinite looping
-4. Click Save — the slideshow renders on the published page
-5. Users can navigate with arrows/dots or let it auto-play
+1. Enable the macro in Admin Settings (disabled by default)
+2. Type `/PlantUML` in the editor
+3. A fullscreen editor opens with a code panel (left) and live preview (right)
+4. Write your PlantUML syntax (e.g., `@startuml` ... `@enduml`)
+5. Preview updates automatically as you type (debounced 800ms)
+6. Click Save — the rendered SVG is stored and displays on the published page
+
+⚠️ **Note:** This macro uses `plantuml.com` (external service) to render diagrams during editing. The rendered SVG is stored locally — no server call on page view. Must be enabled by an admin in Macro Toolkit Settings.
+
+---
 
 ## Admin Settings
 
@@ -224,6 +225,7 @@ Access via: **Confluence Admin → Apps → Macro Toolkit Settings**
 | Service | Used By | Purpose |
 |---------|---------|---------|
 | `embed.diagrams.net` | Draw.io macro | Editor + viewer |
+| `www.plantuml.com` | PlantUML macro | Diagram rendering during editing |
 
 All other macros render entirely client-side with bundled libraries.
 

@@ -13,6 +13,7 @@ const DEFAULT_SETTINGS = {
   'mood-macro': true,
   'graph-chart': true,
   'typewriter-macro': true,
+  'plantuml-macro': false,
 };
 
 resolver.define('getSettings', async () => {
@@ -190,6 +191,64 @@ resolver.define('castMoodVote', async (req) => {
   await storage.set(moodKey, mood);
   return { ...mood, myVote: value };
 });
+
+// PlantUML rendering via public server
+resolver.define('renderPlantUml', async (req) => {
+  const { code } = req.payload;
+  if (!code?.trim()) return { svg: '', error: 'No code provided' };
+  try {
+    // PlantUML server accepts encoded text and returns SVG
+    const encoded = plantumlEncode(code);
+    const response = await api.fetch(`https://www.plantuml.com/plantuml/svg/~1${encoded}`, { method: 'GET' });
+    if (response.status !== 200) return { svg: '', error: `Server returned ${response.status}` };
+    const svg = await response.text();
+    if (svg.includes('<svg')) return { svg };
+    return { svg: '', error: 'Invalid response from PlantUML server' };
+  } catch (e) {
+    return { svg: '', error: e.message };
+  }
+});
+
+// PlantUML text encoding (deflate + custom base64)
+function plantumlEncode(text) {
+  const { deflateSync } = require('zlib');
+  const deflated = deflateSync(Buffer.from(text, 'utf-8'), { level: 9 });
+  return encode64(deflated);
+}
+
+function encode64(data) {
+  let r = '';
+  for (let i = 0; i < data.length; i += 3) {
+    if (i + 2 === data.length) {
+      r += append3bytes(data[i], data[i + 1], 0);
+    } else if (i + 1 === data.length) {
+      r += append3bytes(data[i], 0, 0);
+    } else {
+      r += append3bytes(data[i], data[i + 1], data[i + 2]);
+    }
+  }
+  return r;
+}
+
+function append3bytes(b1, b2, b3) {
+  const c1 = b1 >> 2;
+  const c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
+  const c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
+  const c4 = b3 & 0x3F;
+  return encode6bit(c1 & 0x3F) + encode6bit(c2 & 0x3F) + encode6bit(c3 & 0x3F) + encode6bit(c4 & 0x3F);
+}
+
+function encode6bit(b) {
+  if (b < 10) return String.fromCharCode(48 + b);
+  b -= 10;
+  if (b < 26) return String.fromCharCode(65 + b);
+  b -= 26;
+  if (b < 26) return String.fromCharCode(97 + b);
+  b -= 26;
+  if (b === 0) return '-';
+  if (b === 1) return '_';
+  return '?';
+}
 
 // Carousel functions
 resolver.define('uploadImage', async (req) => {

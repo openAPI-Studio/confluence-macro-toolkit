@@ -21,6 +21,8 @@
     "build:graph-config": "cd static/graph-config && npm install && npm run build",
     "build:typewriter-macro": "cd static/typewriter-macro && npm install && npm run build",
     "build:typewriter-config": "cd static/typewriter-config && npm install && npm run build",
+    "build:plantuml-macro": "cd static/plantuml-macro && npm install && npm run build",
+    "build:plantuml-config": "cd static/plantuml-config && npm install && npm run build",
     "deploy": "npm run build:all && forge deploy",
     "lint": "forge lint"
   },
