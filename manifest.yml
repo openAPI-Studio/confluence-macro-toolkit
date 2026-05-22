@@ -120,21 +120,6 @@ modules:
       resolver:
         function: resolver
 
-    - key: carousel-macro
-      resource: carousel-main
-      icon: resource:carousel-main;icon.svg
-      title: Carousel / Slideshow
-      description: Display images in an animated carousel
-      categories:
-        - media
-      config:
-        resource: carousel-config
-        viewportSize: large
-        title: Carousel Settings
-        openOnInsert: true
-      resolver:
-        function: resolver
-
   confluence:globalSettings:
     - key: macro-settings
       resource: admin-page
@@ -182,10 +167,6 @@ resources:
     path: static/typewriter-macro/build
   - key: typewriter-config
     path: static/typewriter-config/build
-  - key: carousel-main
-    path: static/carousel-macro/build
-  - key: carousel-config
-    path: static/carousel-config/build
 
 app:
   id: ari:cloud:ecosystem::app/7e3d309e-e608-473a-acb3-103e5570a165

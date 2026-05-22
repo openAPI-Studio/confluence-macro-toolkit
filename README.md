@@ -71,65 +71,134 @@ forge install
 ## Macro Details
 
 ### Mermaid Diagram
-- Fullscreen code editor with live SVG preview
-- Theme-aware colors (light blue nodes, dark text)
-- Renders client-side using bundled mermaid.js
+**What it does:** Lets you write Mermaid diagram syntax and renders it as a visual diagram (flowcharts, sequence diagrams, Gantt charts, etc.) directly on your Confluence page.
+
+**How to use:**
+1. Type `/Mermaid` in the editor
+2. A fullscreen editor opens with a code panel (left) and live preview (right)
+3. Write your Mermaid syntax (e.g., `graph TD; A-->B; B-->C;`)
+4. See the diagram update in real-time as you type
+5. Click Save — the diagram renders on the published page
+
+---
 
 ### Markdown
-- Fullscreen editor with live preview
-- Supports GitHub Flavored Markdown (tables, strikethrough, etc.)
-- Renders client-side using react-markdown + remark-gfm
+**What it does:** Renders GitHub-flavored Markdown content on your Confluence page, supporting tables, code blocks, strikethrough, task lists, and more.
+
+**How to use:**
+1. Type `/Markdown` in the editor
+2. A fullscreen editor opens with a text panel (left) and live preview (right)
+3. Write your Markdown content
+4. Click Save — the formatted content renders on the published page
+
+---
 
 ### Swagger / OpenAPI
-- Paste OpenAPI 3.0 JSON spec
-- JSON validation before save
-- Renders interactive API docs using swagger-ui-react
+**What it does:** Renders interactive API documentation from an OpenAPI/Swagger JSON specification, complete with endpoint details, request/response schemas, and try-it-out functionality.
+
+**How to use:**
+1. Type `/Swagger` in the editor
+2. Paste your OpenAPI 3.0 JSON spec into the editor
+3. The editor validates your JSON in real-time (shows errors if invalid)
+4. Click Save — the full Swagger UI renders on the published page
+
+---
 
 ### Draw.io Diagram
-- Full draw.io editor via embed.diagrams.net
-- Diagram XML stored in Forge Storage
-- SVG exported and rendered on published page
-- XML also saved as page attachment for version history
-- ⚠️ Uses external service — disabled by default in admin settings
+**What it does:** Provides a full draw.io diagramming editor embedded in Confluence. Create flowcharts, architecture diagrams, wireframes, and more with draw.io's complete toolset.
+
+**How to use:**
+1. Type `/Draw.io` in the editor
+2. The draw.io editor opens in fullscreen
+3. Create your diagram using draw.io's tools
+4. Click Save & Exit — the diagram renders on the published page
+5. Edit again to modify — all pages and layers are preserved
+
+⚠️ **Note:** This macro uses `embed.diagrams.net` (external service). Must be enabled by an admin in Macro Toolkit Settings.
+
+---
 
 ### Poll / Vote
-- **4 poll types:** Single answer, Multiple answers, Thumbs up/down, Emoji reactions
-- Thumbs/Emoji: instant toggle voting (click to vote, click again to un-vote)
-- Single/Multi: vote button + results with progress bars
-- Click vote count to see voter names
-- Optional "Allow revoke" for single/multi types
-- Alignment options (left/center/right)
-- One vote per user, enforced server-side
+**What it does:** Creates interactive polls that users can vote on directly from the published page. Supports multiple poll types and shows real-time results with voter tracking.
+
+**How to use:**
+1. Type `/Poll` in the editor
+2. Choose a poll type:
+   - **Single Answer** — radio buttons, one choice
+   - **Multiple Answers** — checkboxes, multiple choices
+   - **Thumbs Up/Down** — 👍👎 toggle buttons
+   - **Emoji Reactions** — custom emoji toggle buttons
+3. Enter your question and options (not needed for thumbs/emoji)
+4. Optionally set alignment and allow vote revocation
+5. Click Save — users can vote on the published page
+6. Click vote counts to see who voted for what
+
+---
 
 ### Mood
-- **2 modes:** Custom text (users type words) or Emoji set
-- Floating animated visualization — bigger = more votes
-- CSS float animation with randomized delays
-- One vote per user, voting changes previous vote
+**What it does:** Creates a live "mood board" visualization where team members can express their mood. Entries float and grow larger as more people vote for them, creating a dynamic word cloud effect.
+
+**How to use:**
+1. Type `/Mood` in the editor
+2. Choose a type:
+   - **Custom Text** — users type their own word/phrase (max 20 chars)
+   - **Emoji Set** — users pick from preset emojis
+3. Optionally add a title
+4. Click Save — on the published page:
+   - Custom: users type a mood and submit, or click existing floating words to vote
+   - Emoji: users click emoji buttons to vote
+5. More votes = bigger text/emoji in the visualization
+
+---
 
 ### Graph / Chart
-- **5 chart types:** Bar, Line, Pie, Doughnut, Area
-- Fullscreen config with live preview
-- Multiple datasets with individual color pickers
-- Pie/Doughnut: per-slice color customization
-- Toggle legend and grid
-- Renders using Chart.js (canvas-based, no CSP issues)
+**What it does:** Creates interactive charts and graphs using Chart.js. Supports multiple chart types with customizable colors, datasets, and display options.
+
+**How to use:**
+1. Type `/Graph` in the editor
+2. A fullscreen editor opens with controls (left) and live preview (right)
+3. Select chart type: Bar, Line, Pie, Doughnut, or Area
+4. Enter labels (comma-separated, e.g., `Jan, Feb, Mar, Apr`)
+5. Add datasets with name, color, and values
+   - For Pie/Doughnut: one set of values + per-slice colors
+   - For others: multiple datasets with individual colors
+6. Toggle legend and grid visibility
+7. Click Save — the interactive chart renders on the published page (hover for tooltips)
+
+---
 
 ### Typewriter
-- **4 render styles:** Letter by letter, Word by word, Line by line, Fade in
-- **4 speed options:** Fast (20ms), Medium (50ms), Slow (100ms), Very Slow (150ms)
-- **7 themes:** None, Terminal, Retro Monitor, Matrix, Paper, Blueprint, Hacker
-- Optional blinking cursor (persists after animation)
-- Optional line numbers
-- Live preview in config that responds to all setting changes
+**What it does:** Animates text with a ChatGPT-style typing effect when the page loads. Choose from multiple animation styles and visual themes to create engaging content reveals.
+
+**How to use:**
+1. Type `/Typewriter` in the editor
+2. Choose a render style:
+   - **Typewriter** — letter by letter with blinking cursor
+   - **Word by word** — reveals one word at a time
+   - **Line by line** — reveals one line at a time
+   - **Fade in** — entire text fades in smoothly
+3. Choose speed: Fast, Medium, Slow, or Very Slow
+4. Choose a theme: None, Terminal, Retro Monitor, Matrix, Paper, Blueprint, or Hacker
+5. Toggle blinking cursor (stays after animation) and line numbers
+6. Watch the live preview to see your settings in action
+7. Enter your content and click Save
+8. The animation plays every time someone views the page
+
+---
 
 ### Carousel / Slideshow
-- Upload multiple images (saved as page attachments)
-- Select from existing page attachments
-- **4 button styles:** Arrows, Dots, Both, None
-- **4 transitions:** Slide, Fade, Zoom, Flip
-- Auto-play with configurable interval (2s/3s/5s/8s)
-- Loop toggle
+**What it does:** Displays multiple images in an animated slideshow with navigation controls. Images are stored as page attachments for version control.
+
+**How to use:**
+1. Type `/Carousel` in the editor
+2. Upload images using the file picker, or select from existing page attachments
+3. Configure display options:
+   - **Button Style** — Arrows, Dots, Both, or None
+   - **Transition** — Slide, Fade, Zoom, or Flip
+   - **Auto-play** — toggle + set interval (2s/3s/5s/8s)
+   - **Loop** — toggle infinite looping
+4. Click Save — the slideshow renders on the published page
+5. Users can navigate with arrows/dots or let it auto-play
 
 ## Admin Settings
 

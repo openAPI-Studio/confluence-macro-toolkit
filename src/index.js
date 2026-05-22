@@ -13,7 +13,6 @@ const DEFAULT_SETTINGS = {
   'mood-macro': true,
   'graph-chart': true,
   'typewriter-macro': true,
-  'carousel-macro': true,
 };
 
 resolver.define('getSettings', async () => {
