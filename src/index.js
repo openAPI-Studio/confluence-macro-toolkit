@@ -251,16 +251,47 @@ function encode6bit(b) {
   return '?';
 }
 
-// Excalidraw shared library
+// Excalidraw shared library - chunked storage (200KB per key limit)
+const LIB_META_KEY = 'excalidraw-shared-library-meta';
+const LIB_CHUNK_PREFIX = 'excalidraw-lib-chunk-';
+const CHUNK_SIZE = 190000; // ~190KB to stay safely under 200KB limit
+
 resolver.define('saveSharedLibrary', async (req) => {
   const { libraryItems } = req.payload;
-  await storage.set('excalidraw-shared-library', libraryItems);
+  // Clear old chunks
+  const oldMeta = await storage.get(LIB_META_KEY);
+  if (oldMeta?.chunks) {
+    for (let i = 0; i < oldMeta.chunks; i++) {
+      await storage.delete(`${LIB_CHUNK_PREFIX}${i}`);
+    }
+  }
+  if (!libraryItems?.length) {
+    await storage.set(LIB_META_KEY, { chunks: 0, totalItems: 0 });
+    return { success: true };
+  }
+  // Split into chunks
+  const json = JSON.stringify(libraryItems);
+  const chunkCount = Math.ceil(json.length / CHUNK_SIZE);
+  for (let i = 0; i < chunkCount; i++) {
+    await storage.set(`${LIB_CHUNK_PREFIX}${i}`, json.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE));
+  }
+  await storage.set(LIB_META_KEY, { chunks: chunkCount, totalItems: libraryItems.length });
   return { success: true };
 });
 
 resolver.define('getSharedLibrary', async () => {
-  const items = await storage.get('excalidraw-shared-library');
-  return { libraryItems: items || [] };
+  const meta = await storage.get(LIB_META_KEY);
+  if (!meta?.chunks) return { libraryItems: [] };
+  let json = '';
+  for (let i = 0; i < meta.chunks; i++) {
+    const chunk = await storage.get(`${LIB_CHUNK_PREFIX}${i}`);
+    json += chunk || '';
+  }
+  try {
+    return { libraryItems: JSON.parse(json) };
+  } catch {
+    return { libraryItems: [] };
+  }
 });
 
 // Carousel functions
