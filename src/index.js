@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS = {
   'graph-chart': true,
   'typewriter-macro': true,
   'plantuml-macro': false,
-  'excalidraw-wireframe': true,
+  'excalidraw-wireframe': false,
 };
 
 resolver.define('getSettings', async () => {
@@ -250,6 +250,18 @@ function encode6bit(b) {
   if (b === 1) return '_';
   return '?';
 }
+
+// Excalidraw shared library
+resolver.define('saveSharedLibrary', async (req) => {
+  const { libraryItems } = req.payload;
+  await storage.set('excalidraw-shared-library', libraryItems);
+  return { success: true };
+});
+
+resolver.define('getSharedLibrary', async () => {
+  const items = await storage.get('excalidraw-shared-library');
+  return { libraryItems: items || [] };
+});
 
 // Carousel functions
 resolver.define('uploadImage', async (req) => {

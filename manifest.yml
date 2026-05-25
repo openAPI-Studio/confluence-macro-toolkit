@@ -226,6 +226,8 @@ permissions:
       backend:
         - address: https://embed.diagrams.net
         - address: https://www.plantuml.com
+      client:
+        - address: https://libraries.excalidraw.com
     frames:
       - address: https://embed.diagrams.net
     images:

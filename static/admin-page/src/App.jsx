@@ -25,13 +25,19 @@ const MACROS = [
     icon: '<svg width="24" height="24" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><polygon points="20.305 17.872 27.16 22.418 21.72 25.493 14.861 20.999 20.305 17.872" style="fill:#1c0a42"/><polygon points="14.498 17.807 21.354 22.354 15.914 25.429 9.055 20.935 14.498 17.807" style="fill:#ffbd3f"/><polygon points="7.99 17.966 14.954 22.366 9.577 25.504 2.218 20.849 7.99 17.966" style="fill:#a11f40"/><polygon points="27.149 22.526 27.149 15.194 29.514 13.775 29.514 29.149 9.646 29.149 9.646 25.601 15.086 22.526 15.785 25.601 15.796 25.601 21.472 22.526 21.891 25.601 21.945 25.601 27.149 22.526" style="fill:#fff"/><path d="M27.215,11.23c-.052.069-.417-.262-.653-.526a4.408,4.408,0,0,1-.516-.73A2.6,2.6,0,0,1,25.7,9.2a2.358,2.358,0,0,1-.052-.682,2.959,2.959,0,0,1,.129-.749,3.142,3.142,0,0,1,.787-1.207,15.532,15.532,0,0,0,1.283-1.4,3.062,3.062,0,0,0,.479-.927,3.979,3.979,0,0,0,.151-.855c.019-.364-.025-.593.023-.613s.215.274.287.564a3.167,3.167,0,0,1-.458,2.1,6.9,6.9,0,0,1-1.094,1.448,2.8,2.8,0,0,0-.849,1.234A2.466,2.466,0,0,0,26.3,8.8a3.465,3.465,0,0,0,.476,1.542C27.064,10.914,27.256,11.175,27.215,11.23Z" style="fill:#ea2d2e"/><path d="M29.972,6.087c-.019-.088-.432-.04-.766.073a2.6,2.6,0,0,0-1.059.722,2.8,2.8,0,0,0-.916,1.855,2.972,2.972,0,0,0,.258,1.06c.221.572.455.773.444,1.225-.007.3-.114.484-.048.549s.314-.1.462-.313a1.8,1.8,0,0,0,.259-1.022c-.046-.815-.6-1.015-.608-1.8a1.858,1.858,0,0,1,.129-.676C28.57,6.509,30.008,6.252,29.972,6.087Z" style="fill:#ea2d2e"/></svg>',
     warning: '⚠️ This macro uses an external service (plantuml.com) to render diagrams. Diagram source code is sent to PlantUML servers during editing. Do not enable if your organization restricts external data sharing.',
   },
-  { key: 'excalidraw-wireframe', name: 'Wireframe / Whiteboard', description: 'Create wireframes and sketches with Excalidraw', defaultEnabled: true, icon: '<svg width="24" height="24" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg"><polygon style="fill:#FB992D;" points="201.48,173.196 85.295,85.295 64.082,134.792 138.077,208.788"/><polygon style="fill:#FFB739;" points="85.295,85.295 401.628,401.628 436.984,366.273 134.792,64.082"/><path style="fill:#FA6121;" d="M14.584,85.295l28.284,28.284l63.64-35.355l-91.924-63.64C-4.861,34.03-4.861,65.849,14.584,85.295z"/><path style="fill:#FB7B46;" d="M85.295,14.584l28.284,28.284L92.366,92.366L14.584,14.584C34.03-4.861,65.849-4.861,85.295,14.584z"/><polygon style="fill:#233145;" points="362.425,168.287 93.724,436.987 58.369,401.632 327.069,104.647"/><polygon style="fill:#BEC8D6;" points="460,28.274 431.726,0 369.495,62.22 397.78,90.505"/><polygon style="fill:#466289;" points="433.135,97.576 383.638,147.074 327.069,104.647 397.78,62.221"/></svg>', warning: '⚠️ The community shape library feature is unavailable due to platform restrictions. All core drawing tools work normally.' },
+  { key: 'excalidraw-wireframe', name: 'Wireframe / Whiteboard', description: 'Create wireframes and sketches with Excalidraw', defaultEnabled: false, icon: '<svg width="24" height="24" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg"><polygon style="fill:#FB992D;" points="201.48,173.196 85.295,85.295 64.082,134.792 138.077,208.788"/><polygon style="fill:#FFB739;" points="85.295,85.295 401.628,401.628 436.984,366.273 134.792,64.082"/><path style="fill:#FA6121;" d="M14.584,85.295l28.284,28.284l63.64-35.355l-91.924-63.64C-4.861,34.03-4.861,65.849,14.584,85.295z"/><path style="fill:#FB7B46;" d="M85.295,14.584l28.284,28.284L92.366,92.366L14.584,14.584C34.03-4.861,65.849-4.861,85.295,14.584z"/><polygon style="fill:#233145;" points="362.425,168.287 93.724,436.987 58.369,401.632 327.069,104.647"/><polygon style="fill:#BEC8D6;" points="460,28.274 431.726,0 369.495,62.22 397.78,90.505"/><polygon style="fill:#466289;" points="433.135,97.576 383.638,147.074 327.069,104.647 397.78,62.221"/></svg>' },
 ];
 
 export default function App() {
   const [settings, setSettings] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [libCount, setLibCount] = useState(0);
+  const [libSaved, setLibSaved] = useState(false);
+  const [browseLib, setBrowseLib] = useState(false);
+  const [libCatalog, setLibCatalog] = useState(null);
+  const [libSearch, setLibSearch] = useState('');
+  const [addingLib, setAddingLib] = useState(null);
 
   useEffect(() => {
     invoke('getSettings').then((result) => {
@@ -41,7 +47,34 @@ export default function App() {
       });
       setSettings(s);
     });
+    invoke('getSharedLibrary').then((result) => {
+      setLibCount(result.libraryItems?.length || 0);
+    });
   }, []);
+
+  useEffect(() => {
+    if (browseLib && !libCatalog) {
+      fetch('https://libraries.excalidraw.com/libraries.json').then((r) => r.json()).then(setLibCatalog).catch(console.error);
+    }
+  }, [browseLib]);
+
+  const addFromCatalog = async (lib) => {
+    setAddingLib(lib.id);
+    try {
+      const res = await fetch(`https://libraries.excalidraw.com/libraries/${lib.source}`);
+      const data = await res.json();
+      const items = (data.library || data.libraryItems || []).map((item) =>
+        Array.isArray(item) ? { status: 'published', elements: item } : { status: 'published', ...item }
+      );
+      // Merge with existing
+      const existing = await invoke('getSharedLibrary');
+      const merged = [...(existing.libraryItems || []), ...items];
+      await invoke('saveSharedLibrary', { libraryItems: merged });
+      setLibCount(merged.length);
+      setLibSaved(true);
+    } catch (e) { console.error('Failed to add library', e); }
+    setAddingLib(null);
+  };
 
   const toggle = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -97,8 +130,65 @@ export default function App() {
               {macro.warning}
             </div>
           )}
+          {macro.key === 'excalidraw-wireframe' && (
+            <div style={{ marginTop: 12, padding: 12, background: settings['excalidraw-wireframe'] ? '#f4f5f7' : '#f9f9f9', borderRadius: 4, opacity: settings['excalidraw-wireframe'] ? 1 : 0.5, pointerEvents: settings['excalidraw-wireframe'] ? 'auto' : 'none' }}>
+              <div style={{ fontWeight: 500, fontSize: 13, marginBottom: 8 }}>Shared Shape Library</div>
+              <p style={{ color: '#6b778c', fontSize: 12, margin: '0 0 10px' }}>Upload a <code>.excalidrawlib</code> file or browse community libraries. Shapes will be available to all users.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <label style={{ padding: '4px 10px', fontSize: 12, border: '1px solid #0052CC', borderRadius: 3, background: '#fff', color: '#0052CC', cursor: 'pointer' }}>
+                  📁 Upload .excalidrawlib
+                  <input type="file" accept=".excalidrawlib,.json" style={{ display: 'none' }} onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    try {
+                      const text = await file.text();
+                      const data = JSON.parse(text);
+                      const items = (data.library || data.libraryItems || []).map((item) =>
+                        Array.isArray(item) ? { status: 'published', elements: item } : { status: 'published', ...item }
+                      );
+                      await invoke('saveSharedLibrary', { libraryItems: items });
+                      setLibCount(items.length);
+                      setLibSaved(true);
+                    } catch (err) { alert('Invalid library file: ' + err.message); }
+                  }} />
+                </label>
+                <button onClick={() => setBrowseLib(true)} style={{ padding: '4px 10px', fontSize: 12, border: '1px solid #0052CC', borderRadius: 3, background: '#fff', color: '#0052CC', cursor: 'pointer' }}>📚 Browse Community</button>
+                {libCount > 0 && <button onClick={async () => { await invoke('saveSharedLibrary', { libraryItems: [] }); setLibCount(0); setLibSaved(true); }} style={{ padding: '4px 10px', fontSize: 12, border: '1px solid #de350b', borderRadius: 3, background: '#fff', color: '#de350b', cursor: 'pointer' }}>🗑 Clear</button>}
+              </div>
+              {libSaved && <div style={{ marginTop: 6, color: '#36B37E', fontSize: 12 }}>✓ Library saved ({libCount} items)</div>}
+              {!libSaved && libCount > 0 && <div style={{ marginTop: 6, color: '#6b778c', fontSize: 12 }}>Current: {libCount} items loaded</div>}
+            </div>
+          )}
         </div>
       ))}
+
+      {browseLib && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: '#fff', borderRadius: 8, width: 480, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+            <div style={{ padding: '14px 16px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, fontSize: 15 }}>Community Libraries</span>
+              <button onClick={() => setBrowseLib(false)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 18 }}>✕</button>
+            </div>
+            <div style={{ padding: '10px 16px' }}>
+              <input value={libSearch} onChange={(e) => setLibSearch(e.target.value)} placeholder="Search libraries..." style={{ width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: 4, fontSize: 13 }} />
+            </div>
+            <div style={{ flex: 1, overflow: 'auto', padding: '0 16px 16px' }}>
+              {!libCatalog && <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>Loading...</div>}
+              {(libCatalog || []).filter((l) => l.name.toLowerCase().includes(libSearch.toLowerCase()) || l.description?.toLowerCase().includes(libSearch.toLowerCase())).map((lib) => (
+                <div key={lib.id} style={{ padding: '10px 0', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontWeight: 500, fontSize: 13 }}>{lib.name}</div>
+                    <div style={{ fontSize: 11, color: '#666', marginTop: 2 }}>{lib.description}</div>
+                  </div>
+                  <button onClick={() => addFromCatalog(lib)} disabled={addingLib === lib.id} style={{ padding: '4px 10px', fontSize: 11, border: '1px solid #0052CC', borderRadius: 3, background: addingLib === lib.id ? '#eee' : '#fff', color: '#0052CC', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    {addingLib === lib.id ? 'Adding...' : '+ Add'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
         <button
@@ -109,6 +199,11 @@ export default function App() {
           {saving ? 'Saving...' : 'Save'}
         </button>
         {saved && <span style={{ color: '#36B37E', fontSize: 13 }}>✓ Settings saved</span>}
+      </div>
+
+      <div style={{ marginTop: 32, paddingTop: 16, borderTop: '1px solid #eee', fontSize: 13, color: '#6b778c' }}>
+        <span>Enjoying Macro Toolkit? </span>
+        <a href="https://ko-fi.com/openpost" target="_blank" rel="noreferrer" style={{ color: '#0052CC', textDecoration: 'none' }}>☕ Support us on Ko-fi</a>
       </div>
     </div>
   );
