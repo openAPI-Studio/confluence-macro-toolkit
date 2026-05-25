@@ -223,7 +223,9 @@ forge install
 - No external service required — fully offline
 - ~7.5MB bundle (Excalidraw library)
 
-**Limitation:** The community shape library browser is unavailable due to Forge platform restrictions. All core drawing tools work normally.
+**Limitations:**
+- Diagram data is stored in macro config (inline with page content), which has a ~200KB size limit. Very complex wireframes with many elements may exceed this. For heavy diagrams, consider using the Draw.io macro instead, which uses Forge Storage + attachments.
+- Community shape library browser is redirected through an in-app panel due to Forge sandbox restrictions.
 
 ---
 
