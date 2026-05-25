@@ -15,6 +15,7 @@ A Forge app providing a collection of powerful macros for Atlassian Confluence.
 | **Graph / Chart** | Bar, line, pie, doughnut, area charts with Chart.js | Macro config |
 | **Typewriter** | Animate text with typewriter/word/line/fade effects | Macro config |
 | **PlantUML** | Render UML diagrams from PlantUML syntax | Macro config |
+| **Wireframe / Whiteboard** | Create wireframes and sketches with Excalidraw | Macro config |
 
 ## Features
 
@@ -49,6 +50,8 @@ confluence-macro-toolkit/
     ├── typewriter-config/          # Text + style + speed + theme
     ├── plantuml-macro/             # PlantUML SVG render
     ├── plantuml-config/            # PlantUML code editor + preview
+    ├── excalidraw-macro/           # Excalidraw SVG render
+    ├── excalidraw-config/          # Excalidraw drawing editor
     └── admin-page/                 # Site-level macro toggle settings
 ```
 
@@ -201,6 +204,29 @@ forge install
 
 ---
 
+### Wireframe / Whiteboard
+**What it does:** Provides a full Excalidraw drawing editor for creating wireframes, sketches, diagrams, and whiteboard-style content. Hand-drawn aesthetic, infinite canvas, all rendered client-side.
+
+**How to use:**
+1. Type `/Wireframe` in the editor
+2. A fullscreen Excalidraw canvas opens
+3. Use the toolbar to draw shapes, add text, arrows, freehand sketches
+4. Click Save — the drawing exports as SVG and renders on the published page
+5. Edit again to modify — all elements are preserved
+
+**Features:**
+- Shapes: rectangle, ellipse, diamond, arrow, line, freehand
+- Text with various sizes
+- Colors, fill styles, stroke styles
+- Infinite canvas with zoom/pan
+- Hand-drawn sketch aesthetic
+- No external service required — fully offline
+- ~7.5MB bundle (Excalidraw library)
+
+**Limitation:** The community shape library browser is unavailable due to Forge platform restrictions. All core drawing tools work normally.
+
+---
+
 ## Admin Settings
 
 Access via: **Confluence Admin → Apps → Macro Toolkit Settings**
@@ -257,3 +283,17 @@ forge logs
 - Node.js 22+
 - [Forge CLI](https://developer.atlassian.com/platform/forge/getting-started/)
 - An Atlassian cloud developer site
+
+## Known Issues & Limitations
+
+| Issue | Affected Macro | Details |
+|-------|---------------|---------|
+| **Dark mode background** | All macros | Forge's iframe container has a white background in dark mode. This is a platform limitation — the `ForgeExtensionContainer` uses `var(--ds-surface, #FFFFFF)` which doesn't always propagate in dark themes. Macro content inside adapts correctly. |
+| **Draw.io multi-page export** | Draw.io | Only the currently active page is exported as SVG. Draw.io's embed protocol doesn't support per-page export via `pageId`. All pages are preserved in XML for re-editing. |
+| **Excalidraw library browser** | Wireframe | The community shape library popup is blocked by Forge's iframe sandbox (`allow-popups` not set). All core drawing tools work normally. |
+| **Excalidraw fonts** | Wireframe | Custom Excalidraw fonts (Virgil, Cascadia) may not load due to CSP font-src restrictions. Falls back to system fonts — drawings still render correctly. |
+| **PlantUML rendering** | PlantUML | Requires internet access during editing (calls plantuml.com). Published page renders stored SVG offline. |
+| **Draw.io rendering** | Draw.io | Requires internet access for both editing and viewing (uses embed.diagrams.net). |
+| **Macro config size limit** | All macros | Forge macro config has a payload size limit. Very complex Excalidraw drawings or large SVGs may hit this limit. Draw.io uses Forge Storage as a workaround. |
+| **Ghost macros after rename** | All macros | Renaming or removing macro keys leaves "ghost" entries in the editor's macro browser. Fix: `forge uninstall` then `forge install`. |
+| **Swagger inline styles** | Swagger | swagger-ui-react uses inline styles which may trigger CSP warnings in console. Functionality is not affected since `unsafe-inline` is enabled. |

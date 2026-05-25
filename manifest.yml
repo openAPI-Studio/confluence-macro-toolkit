@@ -135,6 +135,21 @@ modules:
       resolver:
         function: resolver
 
+    - key: excalidraw-wireframe
+      resource: excalidraw-main
+      icon: resource:excalidraw-main;icon.svg
+      title: Wireframe / Whiteboard
+      description: Create wireframes and sketches with Excalidraw
+      categories:
+        - visuals
+      config:
+        resource: excalidraw-config
+        viewportSize: fullscreen
+        title: Wireframe Editor
+        openOnInsert: true
+      resolver:
+        function: resolver
+
   confluence:globalSettings:
     - key: macro-settings
       resource: admin-page
@@ -186,6 +201,10 @@ resources:
     path: static/plantuml-macro/build
   - key: plantuml-config
     path: static/plantuml-config/build
+  - key: excalidraw-main
+    path: static/excalidraw-macro/build
+  - key: excalidraw-config
+    path: static/excalidraw-config/build
 
 app:
   id: ari:cloud:ecosystem::app/7e3d309e-e608-473a-acb3-103e5570a165
@@ -211,3 +230,5 @@ permissions:
       - address: https://embed.diagrams.net
     images:
       - address: '*.atlassian.net'
+    fonts:
+      - 'https://esm.sh'

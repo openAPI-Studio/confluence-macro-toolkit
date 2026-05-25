@@ -14,6 +14,7 @@ const DEFAULT_SETTINGS = {
   'graph-chart': true,
   'typewriter-macro': true,
   'plantuml-macro': false,
+  'excalidraw-wireframe': true,
 };
 
 resolver.define('getSettings', async () => {

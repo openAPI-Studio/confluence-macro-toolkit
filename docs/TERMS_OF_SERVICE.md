@@ -4,7 +4,7 @@
 
 ## Usage
 
-Confluence Macro Toolkit is open-source software licensed under the [GPL-3.0](../LICENSE). By using this app, you agree to the following terms.
+Confluence Macro Toolkit is open-source software licensed under the [Apache-2.0](../LICENSE). By using this app, you agree to the following terms.
 
 ## Disclaimer
 
@@ -16,7 +16,7 @@ The app is provided on a best-effort basis. There is no guarantee of uptime, sup
 
 ## Modifications
 
-Users may modify and redistribute this software under the terms of the GPL-3.0 license.
+Users may modify and redistribute this software under the terms of the Apache-2.0 license.
 
 ## Changes to These Terms
 
