@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS = {
   'typewriter-macro': true,
   'plantuml-macro': false,
   'excalidraw-wireframe': false,
+  'sticky-note': true,
 };
 
 resolver.define('getSettings', async () => {

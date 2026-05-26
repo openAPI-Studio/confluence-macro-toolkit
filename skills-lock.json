@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "forge-app-builder": {
+      "source": "atlassian/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/forge-app-builder/SKILL.md",
+      "computedHash": "dac6b9b02c621d854a22e9df462bb4c19ddcb6834b8e3ad44e1a671e8de5f20c"
+    },
+    "forge-app-review": {
+      "source": "atlassian/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/forge-app-review/SKILL.md",
+      "computedHash": "b300c86db723755f9231e69915cb8fc7523d38a0de57c83eef06d0172531fa70"
+    },
+    "forge-connector": {
+      "source": "atlassian/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/forge-connector/SKILL.md",
+      "computedHash": "4ffb98a835910253f9d0e512820613ee3dbfeb0ebd2f886ae1ca52b86ad61dbe"
+    },
+    "forge-debugger": {
+      "source": "atlassian/forge-skills",
+      "sourceType": "github",
+      "skillPath": "skills/forge-debugger/SKILL.md",
+      "computedHash": "c3b3b899d03951d6f378d098ec25ef2c6a944bd92d2b9b44d6460757cae5dcaf"
+    }
+  }
+}

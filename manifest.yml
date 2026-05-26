@@ -150,6 +150,20 @@ modules:
       resolver:
         function: resolver
 
+    - key: sticky-note
+      resource: sticky-main
+      title: Sticky Note
+      description: Add colorful sticky notes with handwritten style
+      categories:
+        - formatting
+      config:
+        resource: sticky-config
+        viewportSize: large
+        title: Sticky Note
+        openOnInsert: true
+      resolver:
+        function: resolver
+
   confluence:globalSettings:
     - key: macro-settings
       resource: admin-page
@@ -205,6 +219,10 @@ resources:
     path: static/excalidraw-macro/build
   - key: excalidraw-config
     path: static/excalidraw-config/build
+  - key: sticky-main
+    path: static/sticky-macro/build
+  - key: sticky-config
+    path: static/sticky-config/build
 
 app:
   id: ari:cloud:ecosystem::app/7e3d309e-e608-473a-acb3-103e5570a165
