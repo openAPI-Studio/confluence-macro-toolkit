@@ -18,7 +18,9 @@ const DEFAULT_SETTINGS = {
   'typewriter-macro': true,
   'plantuml-macro': false,
   'excalidraw-wireframe': false,
+  'clock-gadget': true,
   'sticky-note': true,
+  'spoiler-reveal': true,
 };
 
 resolver.define('getSettings', async () => {

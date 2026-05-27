@@ -27,6 +27,10 @@
     "build:excalidraw-config": "cd static/excalidraw-config && npm install && npm run build",
     "build:sticky-macro": "cd static/sticky-macro && npm install && npm run build",
     "build:sticky-config": "cd static/sticky-config && npm install && npm run build",
+    "build:spoiler-macro": "cd static/spoiler-macro && npm install && npm run build",
+    "build:spoiler-config": "cd static/spoiler-config && npm install && npm run build",
+    "build:clock-macro": "cd static/clock-macro && npm install && npm run build",
+    "build:clock-config": "cd static/clock-config && npm install && npm run build",
     "deploy": "npm run build:all && forge deploy",
     "lint": "forge lint"
   },

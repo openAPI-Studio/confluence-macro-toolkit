@@ -90,7 +90,7 @@ export default function App() {
     <div style={{ width: '100%', height: '100vh' }}>
       <iframe
         ref={iframeRef}
-        src="https://embed.diagrams.net/?embed=1&proto=json&spin=1&saveAndExit=1&noExitBtn=0"
+        src={`https://embed.diagrams.net/?embed=1&proto=json&spin=1&saveAndExit=1&noExitBtn=0&ui=${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'kennedy'}`}
         style={{ width: '100%', height: '100%', border: 'none' }}
       />
     </div>
