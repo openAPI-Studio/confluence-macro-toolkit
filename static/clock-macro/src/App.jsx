@@ -155,7 +155,7 @@ export default function App() {
             ? <AnalogClock timezone={clock.timezone} color={clock.color} pattern={clock.pattern} />
             : <DigitalClock timezone={clock.timezone} color={clock.color} pattern={clock.pattern} />
           }
-          {clock.label && <div style={{ fontSize: 12, color: '#6b778c', fontWeight: 500 }}>{clock.label}</div>}
+          {clock.label && <div style={{ fontSize: 12, color: 'var(--ds-text-subtlest, #6b778c)', fontWeight: 500 }}>{clock.label}</div>}
         </div>
       ))}
     </div>
