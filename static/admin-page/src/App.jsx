@@ -23,6 +23,13 @@ export default function App() {
   const [settings, setSettings] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [libCount, setLibCount] = useState(0);
+  const [libSaved, setLibSaved] = useState(false);
+  const [browseLib, setBrowseLib] = useState(false);
+  const [libCatalog, setLibCatalog] = useState(null);
+  const [libSearch, setLibSearch] = useState('');
+  const [addingLib, setAddingLib] = useState(null);
+  const [addedLibs, setAddedLibs] = useState(new Set());
 
   useEffect(() => {
     invoke('getSettings').then((result) => {
@@ -30,7 +37,32 @@ export default function App() {
       MACROS.forEach((m) => { s[m.key] = result[m.key] !== undefined ? result[m.key] : m.defaultEnabled; });
       setSettings(s);
     });
+    invoke('getSharedLibrary').then((r) => setLibCount(r.libraryItems?.length || 0));
   }, []);
+
+  useEffect(() => {
+    if (browseLib && !libCatalog) {
+      fetch('https://libraries.excalidraw.com/libraries.json').then((r) => r.json()).then(setLibCatalog).catch(console.error);
+    }
+  }, [browseLib]);
+
+  const addFromCatalog = async (lib) => {
+    setAddingLib(lib.id);
+    try {
+      const res = await fetch(`https://libraries.excalidraw.com/libraries/${lib.source}`);
+      const data = await res.json();
+      const items = (data.library || data.libraryItems || []).map((item) =>
+        Array.isArray(item) ? { status: 'published', elements: item } : { status: 'published', ...item }
+      );
+      const existing = await invoke('getSharedLibrary');
+      const merged = [...(existing.libraryItems || []), ...items];
+      await invoke('saveSharedLibrary', { libraryItems: merged });
+      setLibCount(merged.length);
+      setLibSaved(true);
+      setAddedLibs((prev) => new Set([...prev, lib.id]));
+    } catch (e) { console.error('Failed to add library', e); }
+    setAddingLib(null);
+  };
 
   const toggle = (key) => { setSettings((prev) => ({ ...prev, [key]: !prev[key] })); setSaved(false); };
 
@@ -97,9 +129,61 @@ export default function App() {
                 ⚠️ {macro.warning}
               </div>
             )}
+            {macro.key === 'excalidraw-wireframe' && (
+              <div style={{ marginTop: 10, padding: 10, background: 'var(--ds-surface-sunken, #F7F8F9)', borderRadius: 4, opacity: settings['excalidraw-wireframe'] ? 1 : 0.4, pointerEvents: settings['excalidraw-wireframe'] ? 'auto' : 'none' }}>
+                <div style={{ fontWeight: 500, fontSize: 12, color: 'var(--ds-text, #172B4D)', marginBottom: 6 }}>Shared Shape Library</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <label style={{ padding: '3px 8px', fontSize: 11, border: '1px solid var(--ds-border-brand, #0052CC)', borderRadius: 3, background: 'var(--ds-surface, #fff)', color: 'var(--ds-link, #0C66E4)', cursor: 'pointer' }}>
+                    📁 Upload
+                    <input type="file" accept=".excalidrawlib,.json" style={{ display: 'none' }} onChange={async (e) => {
+                      const file = e.target.files[0]; if (!file) return;
+                      try {
+                        const data = JSON.parse(await file.text());
+                        const items = (data.library || data.libraryItems || []).map((item) => Array.isArray(item) ? { status: 'published', elements: item } : { status: 'published', ...item });
+                        await invoke('saveSharedLibrary', { libraryItems: items });
+                        setLibCount(items.length); setLibSaved(true);
+                      } catch (err) { alert('Invalid file: ' + err.message); }
+                    }} />
+                  </label>
+                  <button onClick={() => setBrowseLib(true)} style={{ padding: '3px 8px', fontSize: 11, border: '1px solid var(--ds-border-brand, #0052CC)', borderRadius: 3, background: 'var(--ds-surface, #fff)', color: 'var(--ds-link, #0C66E4)', cursor: 'pointer' }}>📚 Browse</button>
+                  {libCount > 0 && <button onClick={async () => { await invoke('saveSharedLibrary', { libraryItems: [] }); setLibCount(0); setLibSaved(true); }} style={{ padding: '3px 8px', fontSize: 11, border: '1px solid var(--ds-border-danger, #de350b)', borderRadius: 3, background: 'var(--ds-surface, #fff)', color: '#de350b', cursor: 'pointer' }}>🗑 Clear</button>}
+                  {libSaved && <span style={{ fontSize: 11, color: 'var(--ds-text-success, #216E4E)' }}>✓ Saved ({libCount})</span>}
+                  {!libSaved && libCount > 0 && <span style={{ fontSize: 11, color: 'var(--ds-text-subtlest, #626F86)' }}>{libCount} items</span>}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Browse library modal */}
+      {browseLib && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: 'var(--ds-surface-overlay, #fff)', borderRadius: 8, width: 460, maxHeight: '70vh', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--ds-border, #091E4224)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--ds-text, #172B4D)' }}>Community Libraries</span>
+              <button onClick={() => setBrowseLib(false)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 18, color: 'var(--ds-text, #172B4D)' }}>✕</button>
+            </div>
+            <div style={{ padding: '8px 16px' }}>
+              <input value={libSearch} onChange={(e) => setLibSearch(e.target.value)} placeholder="Search..." style={{ width: '100%', padding: '6px 10px', border: '1px solid var(--ds-border, #091E4224)', borderRadius: 4, fontSize: 12, background: 'var(--ds-surface, #fff)', color: 'var(--ds-text, #172B4D)', boxSizing: 'border-box' }} />
+            </div>
+            <div style={{ flex: 1, overflow: 'auto', padding: '0 16px 16px' }}>
+              {!libCatalog && <div style={{ padding: 16, textAlign: 'center', color: 'var(--ds-text-subtlest, #626F86)' }}>Loading...</div>}
+              {(libCatalog || []).filter((l) => l.name.toLowerCase().includes(libSearch.toLowerCase()) || l.description?.toLowerCase().includes(libSearch.toLowerCase())).map((lib) => (
+                <div key={lib.id} style={{ padding: '8px 0', borderBottom: '1px solid var(--ds-border, #091E4224)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 500, fontSize: 12, color: 'var(--ds-text, #172B4D)' }}>{lib.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--ds-text-subtlest, #626F86)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lib.description}</div>
+                  </div>
+                  <button onClick={() => addFromCatalog(lib)} disabled={addingLib === lib.id} style={{ padding: '3px 8px', fontSize: 11, border: `1px solid ${addedLibs.has(lib.id) ? 'var(--ds-border-success, #36B37E)' : 'var(--ds-border-brand, #0052CC)'}`, borderRadius: 3, background: 'var(--ds-surface, #fff)', color: addedLibs.has(lib.id) ? 'var(--ds-text-success, #216E4E)' : 'var(--ds-link, #0C66E4)', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    {addingLib === lib.id ? '...' : addedLibs.has(lib.id) ? '✓ Added' : '+ Add'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Save bar */}
       <div style={{ marginTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
