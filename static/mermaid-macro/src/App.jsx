@@ -22,7 +22,7 @@ mermaid.initialize({
 });
 
 export default function App() {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(null);
   const [disabled, setDisabled] = useState(false);
   const containerRef = useRef(null);
   const renderIdRef = useRef(0);
@@ -48,6 +48,7 @@ export default function App() {
   }, [code]);
 
   if (disabled) return <p style={{ color: '#6b778c' }}>This macro has been disabled by your site administrator.</p>;
+  if (code === null) return null;
   if (!code) return <p style={{ color: '#6b778c' }}>No diagram configured. Edit this macro to add Mermaid code.</p>;
 
   return <div ref={containerRef} />;
