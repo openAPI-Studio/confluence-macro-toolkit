@@ -236,7 +236,6 @@ permissions:
     - read:confluence-content.summary
     - read:confluence-content.all
     - read:confluence-user
-    - write:confluence-content
     - write:confluence-file
     - storage:app
   external:
@@ -250,5 +249,3 @@ permissions:
       - address: https://embed.diagrams.net
     images:
       - address: '*.atlassian.net'
-    fonts:
-      - 'https://esm.sh'

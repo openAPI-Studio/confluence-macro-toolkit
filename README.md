@@ -16,6 +16,7 @@ A Forge app providing a collection of powerful macros for Atlassian Confluence.
 | **Typewriter** | Animate text with typewriter/word/line/fade effects | Macro config |
 | **PlantUML** | Render UML diagrams from PlantUML syntax | Macro config |
 | **Wireframe / Whiteboard** | Create wireframes and sketches with Excalidraw | Macro config |
+| **Sticky Note** | Colorful sticky notes with handwritten style, pins, and tape | Macro config |
 
 ## Features
 
@@ -52,6 +53,8 @@ confluence-macro-toolkit/
     ├── plantuml-config/            # PlantUML code editor + preview
     ├── excalidraw-macro/           # Excalidraw SVG render
     ├── excalidraw-config/          # Excalidraw drawing editor
+    ├── sticky-macro/               # Sticky note render
+    ├── sticky-config/              # Sticky note editor (color, size, font, pin/tape)
     └── admin-page/                 # Site-level macro toggle settings
 ```
 
@@ -226,6 +229,23 @@ forge install
 **Limitations:**
 - Diagram data is stored in macro config (inline with page content), which has a ~200KB size limit. Very complex wireframes with many elements may exceed this. For heavy diagrams, consider using the Draw.io macro instead, which uses Forge Storage + attachments.
 - Community shape library browser is redirected through an in-app panel due to Forge sandbox restrictions.
+
+---
+
+### Sticky Note
+**What it does:** Adds colorful sticky notes to your Confluence page with a handwritten poster-note aesthetic. Customize colors, fonts, sizes, and attachment styles (tape or pin).
+
+**How to use:**
+1. Type `/Sticky` in the editor
+2. Choose your options:
+   - **Color** — 7 presets (yellow, orange, pink, green, blue, purple, white) + custom color picker
+   - **Size** — Small, Medium, Large, Full Width
+   - **Font** — Handwritten (default), Sans-serif, Serif, Monospace
+   - **Attachment** — Tape (with color options), Pin (SVG pushpin), or None
+   - **Layout** — Text alignment (left/center/right), vertical position (top/middle/bottom), line spacing (tight/normal/loose)
+3. Write your note text
+4. See the live preview update as you change settings
+5. Click Save — the styled sticky note renders on the published page
 
 ---
 

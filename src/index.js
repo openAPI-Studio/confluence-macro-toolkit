@@ -1,6 +1,9 @@
 import Resolver from '@forge/resolver';
 import api, { route, storage } from '@forge/api';
 
+// PERF-01: Move require to top level
+const zlib = require('zlib');
+
 const resolver = new Resolver();
 
 const SETTINGS_KEY = 'macro-settings';
@@ -19,28 +22,63 @@ const DEFAULT_SETTINGS = {
 };
 
 resolver.define('getSettings', async () => {
-  const settings = await storage.get(SETTINGS_KEY);
-  return settings || DEFAULT_SETTINGS;
+  try {
+    const settings = await storage.get(SETTINGS_KEY);
+    return settings || DEFAULT_SETTINGS;
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
 });
 
 resolver.define('saveSettings', async (req) => {
-  const { settings } = req.payload;
-  await storage.set(SETTINGS_KEY, settings);
-  return { success: true };
+  try {
+    const { settings } = req.payload;
+    if (!settings || typeof settings !== 'object') return { success: false };
+    await storage.set(SETTINGS_KEY, settings);
+    return { success: true };
+  } catch {
+    return { success: false };
+  }
 });
+
+// COST-01: Shared voter name resolution (SEC-10: use asUser instead of asApp)
+async function resolveVoterNames(votes) {
+  const voterNames = {};
+  for (const userId of Object.keys(votes || {})) {
+    try {
+      const res = await api.asUser().requestConfluence(route`/wiki/rest/api/user?accountId=${userId}`, { method: 'GET' });
+      const user = await res.json();
+      voterNames[userId] = user.displayName || user.publicName || userId.slice(0, 8);
+    } catch {
+      voterNames[userId] = userId.slice(0, 8);
+    }
+  }
+  return voterNames;
+}
+
+// SEC-04: Input validation helpers
+function validateString(val, maxLen = 500) {
+  if (typeof val !== 'string') return '';
+  return val.slice(0, maxLen);
+}
+
+function validateArray(val, maxItems = 20, maxItemLen = 200) {
+  if (!Array.isArray(val)) return [];
+  return val.slice(0, maxItems).map(item => typeof item === 'string' ? item.slice(0, maxItemLen) : '');
+}
 
 // Poll functions
 resolver.define('savePoll', async (req) => {
   const { contentId, macroId, question, options, pollType, allowRevoke, emojis, alignment } = req.payload;
-  const pollKey = `poll-${contentId}-${macroId}`;
+  const pollKey = `poll-${validateString(contentId, 50)}-${validateString(macroId, 50)}`;
   const existing = await storage.get(pollKey);
   await storage.set(pollKey, {
-    question,
-    options,
-    pollType: pollType || 'single',
-    allowRevoke: allowRevoke || false,
-    alignment: alignment || 'left',
-    emojis: emojis || undefined,
+    question: validateString(question, 500),
+    options: validateArray(options, 20, 200),
+    pollType: ['single', 'multi', 'thumbs', 'emoji'].includes(pollType) ? pollType : 'single',
+    allowRevoke: !!allowRevoke,
+    alignment: ['left', 'center', 'right'].includes(alignment) ? alignment : 'left',
+    emojis: emojis ? validateArray(emojis, 10, 4) : undefined,
     votes: existing?.votes || {},
   });
   return { pollKey };
@@ -52,17 +90,7 @@ resolver.define('getPoll', async (req) => {
   const poll = await storage.get(pollKey);
   if (!poll) return {};
   const accountId = req.context.accountId;
-  // Resolve voter display names
-  const voterNames = {};
-  for (const userId of Object.keys(poll.votes || {})) {
-    try {
-      const res = await api.asApp().requestConfluence(route`/wiki/rest/api/user?accountId=${userId}`, { method: 'GET' });
-      const user = await res.json();
-      voterNames[userId] = user.displayName || user.publicName || userId;
-    } catch {
-      voterNames[userId] = userId.slice(0, 8);
-    }
-  }
+  const voterNames = await resolveVoterNames(poll.votes);
   return { ...poll, voterNames, myVote: poll.votes?.[accountId] ?? null };
 });
 
@@ -74,17 +102,7 @@ resolver.define('castVote', async (req) => {
   poll.votes = poll.votes || {};
   poll.votes[accountId] = optionIndex;
   await storage.set(pollKey, poll);
-  // Return updated poll with voter names
-  const voterNames = {};
-  for (const userId of Object.keys(poll.votes)) {
-    try {
-      const res = await api.asApp().requestConfluence(route`/wiki/rest/api/user?accountId=${userId}`, { method: 'GET' });
-      const user = await res.json();
-      voterNames[userId] = user.displayName || user.publicName || userId;
-    } catch {
-      voterNames[userId] = userId.slice(0, 8);
-    }
-  }
+  const voterNames = await resolveVoterNames(poll.votes);
   return { ...poll, voterNames, myVote: optionIndex };
 });
 
@@ -97,16 +115,7 @@ resolver.define('revokeVote', async (req) => {
   poll.votes = poll.votes || {};
   delete poll.votes[accountId];
   await storage.set(pollKey, poll);
-  const voterNames = {};
-  for (const userId of Object.keys(poll.votes)) {
-    try {
-      const res = await api.asApp().requestConfluence(route`/wiki/rest/api/user?accountId=${userId}`, { method: 'GET' });
-      const user = await res.json();
-      voterNames[userId] = user.displayName || user.publicName || userId;
-    } catch {
-      voterNames[userId] = userId.slice(0, 8);
-    }
-  }
+  const voterNames = await resolveVoterNames(poll.votes);
   return { ...poll, voterNames, myVote: null };
 });
 
@@ -213,8 +222,7 @@ resolver.define('renderPlantUml', async (req) => {
 
 // PlantUML text encoding (deflate + custom base64)
 function plantumlEncode(text) {
-  const { deflateSync } = require('zlib');
-  const deflated = deflateSync(Buffer.from(text, 'utf-8'), { level: 9 });
+  const deflated = zlib.deflateSync(Buffer.from(text, 'utf-8'), { level: 9 });
   return encode64(deflated);
 }
 
