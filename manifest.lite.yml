@@ -118,6 +118,21 @@ modules:
       resolver:
         function: resolver
 
+    - key: clock-gadget
+      resource: clock-main
+      icon: resource:clock-main;icon.svg
+      title: Clock
+      description: Display configurable clock gadgets (analog/digital)
+      categories:
+        - visuals
+      config:
+        resource: clock-config
+        viewportSize: large
+        title: Configure Clocks
+        openOnInsert: true
+      resolver:
+        function: resolver
+
   confluence:globalSettings:
     - key: macro-settings
       resource: admin-page
@@ -163,6 +178,10 @@ resources:
     path: static/spoiler-macro/build
   - key: spoiler-config
     path: static/spoiler-config/build
+  - key: clock-main
+    path: static/clock-macro/build
+  - key: clock-config
+    path: static/clock-config/build
   - key: admin-page
     path: static/admin-page/build
 

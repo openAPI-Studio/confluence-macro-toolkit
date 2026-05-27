@@ -71,7 +71,7 @@ export default function App() {
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
-                <span style={{ fontSize: 22 }}>{macro.icon}</span>
+                <span style={{ fontSize: 24, lineHeight: 1 }}>{macro.icon}</span>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--ds-text, #172B4D)' }}>{macro.name}</div>
                   <div style={{ fontSize: 12, color: 'var(--ds-text-subtlest, #626F86)', marginTop: 2 }}>{macro.description}</div>
