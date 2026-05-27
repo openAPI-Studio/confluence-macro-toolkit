@@ -126,7 +126,7 @@ export default function App() {
         </div>
 
         <Label>Button Text</Label>
-        <input value={buttonText} onChange={(e) => setButtonText(e.target.value)} style={{ width: '100%', padding: 8, fontSize: 14, border: '1px solid #dfe1e6', borderRadius: 8, boxSizing: 'border-box', marginBottom: 20 }} />
+        <input value={buttonText} onChange={(e) => setButtonText(e.target.value)} placeholder="Click to reveal" style={{ width: '100%', padding: 8, fontSize: 14, border: '1px solid #dfe1e6', borderRadius: 8, boxSizing: 'border-box', marginBottom: 20 }} />
 
         <Label>Hidden Content</Label>
         <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Enter the content to hide..."

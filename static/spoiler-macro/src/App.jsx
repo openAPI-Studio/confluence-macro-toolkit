@@ -67,6 +67,7 @@ export default function App() {
           minHeight: 80,
           padding: 24,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
