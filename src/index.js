@@ -324,10 +324,19 @@ resolver.define('getPageAttachments', async (req) => {
   try {
     const res = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${pageId}/child/attachment?limit=50`, { method: 'GET' });
     const data = await res.json();
-    const base = data._links?.base || '';
-    const images = (data.results || [])
-      .filter((a) => a.extensions?.mediaType?.startsWith('image/') || a.title?.match(/\.(png|jpe?g|gif|svg|webp|avif|bmp)$/i))
-      .map((a) => ({ id: a.id, name: a.title, url: `${base}${a._links?.download || ''}`, sourcePageId: pageId }));
+    const imageAtts = (data.results || [])
+      .filter((a) => a.extensions?.mediaType?.startsWith('image/') || a.title?.match(/\.(png|jpe?g|gif|svg|webp|avif|bmp)$/i));
+    const images = [];
+    for (const a of imageAtts) {
+      try {
+        const dlRes = await api.asUser().requestConfluence(route`${a._links.download}`, { method: 'GET' });
+        const buf = await dlRes.arrayBuffer();
+        const mime = a.extensions?.mediaType || 'image/jpeg';
+        images.push({ id: a.id, name: a.title, url: `data:${mime};base64,${Buffer.from(buf).toString('base64')}`, sourcePageId: pageId });
+      } catch {
+        images.push({ id: a.id, name: a.title, url: '', sourcePageId: pageId });
+      }
+    }
     return { images };
   } catch (e) { return { images: [], error: e.message }; }
 });
@@ -410,18 +419,20 @@ resolver.define('listPageImages', async (req) => {
       route`/wiki/rest/api/content/${contentId}/child/attachment?limit=50`,
       { method: 'GET' }
     );
-    console.log('listPageImages status:', response.status);
     const data = await response.json();
-    console.log('listPageImages total results:', data.results?.length);
-    const base = data._links?.base || '';
-    const images = (data.results || [])
-      .filter((att) => att.extensions?.mediaType?.startsWith('image/') || att.title?.match(/\.(png|jpe?g|gif|svg|webp|avif|bmp)$/i))
-      .map((att) => ({
-        id: att.id,
-        name: att.title,
-        url: `${base}${att._links?.download || ''}`,
-      }));
-    console.log('listPageImages filtered:', images.length);
+    const imageAtts = (data.results || [])
+      .filter((att) => att.extensions?.mediaType?.startsWith('image/') || att.title?.match(/\.(png|jpe?g|gif|svg|webp|avif|bmp)$/i));
+    const images = [];
+    for (const att of imageAtts) {
+      try {
+        const dlRes = await api.asUser().requestConfluence(route`${att._links.download}`, { method: 'GET' });
+        const buf = await dlRes.arrayBuffer();
+        const mime = att.extensions?.mediaType || 'image/jpeg';
+        images.push({ id: att.id, name: att.title, url: `data:${mime};base64,${Buffer.from(buf).toString('base64')}` });
+      } catch {
+        images.push({ id: att.id, name: att.title, url: '' });
+      }
+    }
     return { images };
   } catch (e) {
     console.error('listPageImages error:', e.message, e.stack);
