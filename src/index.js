@@ -431,10 +431,12 @@ resolver.define('listPageImages', async (req) => {
 
 resolver.define('getImageUrls', async (req) => {
   const { attachmentIds, contentId } = req.payload;
+  console.log('getImageUrls called:', { attachmentIds, contentId, contextContentId: req.context.extension?.content?.id });
   if (!attachmentIds || !attachmentIds.length) return { images: [] };
 
   try {
     const pageId = contentId || req.context.extension?.content?.id || req.context.contentId;
+    console.log('getImageUrls pageId resolved:', pageId);
     if (!pageId) return { images: attachmentIds.map(id => ({ id, url: '', name: id })) };
 
     const allRes = await api.asApp().requestConfluence(
