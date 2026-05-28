@@ -88,7 +88,7 @@ export default function App() {
         if (result.id) finalImages.push({ id: result.id, name: result.name });
       }
     }
-    view.submit({ config: { images: JSON.stringify(finalImages), transition, controls, autoplay: String(autoplay), loop: String(loop) } });
+    view.submit({ config: { images: JSON.stringify(finalImages), contentId, transition, controls, autoplay: String(autoplay), loop: String(loop) } });
   };
 
   const Pill = ({ active, onClick, children }) => (
