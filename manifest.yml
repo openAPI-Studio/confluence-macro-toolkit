@@ -294,6 +294,7 @@ permissions:
     - read:confluence-user
     - write:confluence-file
     - storage:app
+    - search:confluence
   external:
     fetch:
       backend:
