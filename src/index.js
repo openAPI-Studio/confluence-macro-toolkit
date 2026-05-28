@@ -446,13 +446,23 @@ resolver.define('getImageUrls', async (req) => {
     const allData = await allRes.json();
     const base = allData._links?.base || '';
 
-    const images = attachmentIds.map(id => {
+    const images = [];
+    for (const id of attachmentIds) {
       const att = (allData.results || []).find(a => a.id === id || a.id === `att${id}` || `att${a.id}` === id);
-      if (att) {
-        return { id, url: `${base}${att._links?.download || ''}`, name: att.title || id };
+      if (att && att._links?.download) {
+        try {
+          const dlRes = await api.asApp().requestConfluence(route`${att._links.download}`, { method: 'GET' });
+          const buf = await dlRes.arrayBuffer();
+          const mime = att.extensions?.mediaType || 'image/jpeg';
+          const b64 = Buffer.from(buf).toString('base64');
+          images.push({ id, url: `data:${mime};base64,${b64}`, name: att.title || id });
+        } catch {
+          images.push({ id, url: '', name: att.title || id });
+        }
+      } else {
+        images.push({ id, url: '', name: id });
       }
-      return { id, url: '', name: id };
-    });
+    }
 
     return { images };
   } catch (e) {
