@@ -195,3 +195,5 @@ permissions:
     - read:confluence-user
     - write:confluence-file
     - storage:app
+    - search:confluence
+    - readonly:content.attachment:confluence
