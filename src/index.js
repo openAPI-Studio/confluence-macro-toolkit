@@ -434,10 +434,10 @@ resolver.define('getImageUrls', async (req) => {
   if (!attachmentIds || !attachmentIds.length) return { images: [] };
 
   try {
-    const pageId = contentId || req.context.extension?.content?.id;
+    const pageId = contentId || req.context.extension?.content?.id || req.context.contentId;
     if (!pageId) return { images: attachmentIds.map(id => ({ id, url: '', name: id })) };
 
-    const allRes = await api.asUser().requestConfluence(
+    const allRes = await api.asApp().requestConfluence(
       route`/wiki/rest/api/content/${pageId}/child/attachment?limit=50`,
       { method: 'GET' }
     );

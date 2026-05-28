@@ -22,8 +22,8 @@ export default function App() {
       if (c.images) {
         try {
           const parsed = JSON.parse(c.images);
-          const contentId = ctx.extension.content?.id;
-          if (parsed.length && contentId) {
+          const contentId = ctx.extension.content?.id || ctx.contentId || '';
+          if (parsed.length) {
             const { images: resolved } = await invoke('getImageUrls', { attachmentIds: parsed.map((i) => i.id), contentId });
             setImages(resolved || []);
           } else { setImages([]); }
