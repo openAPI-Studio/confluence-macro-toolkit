@@ -465,12 +465,17 @@ resolver.define('getImageUrls', async (req) => {
       if (att && att._links?.download) {
         try {
           const dlPath = att._links.download.split('?')[0];
+          console.log('Downloading:', dlPath);
           const dlRes = await api.asApp().requestConfluence(route`${dlPath}`, { method: 'GET' });
+          console.log('Download status:', dlRes.status);
+          if (dlRes.status !== 200) { images.push({ id, url: '', name: att.title || id }); continue; }
           const buf = await dlRes.arrayBuffer();
+          console.log('Downloaded bytes:', buf.byteLength);
           const mime = att.extensions?.mediaType || 'image/jpeg';
           const b64 = Buffer.from(buf).toString('base64');
           images.push({ id, url: `data:${mime};base64,${b64}`, name: att.title || id });
-        } catch {
+        } catch (e) {
+          console.error('Download error:', e.message);
           images.push({ id, url: '', name: att.title || id });
         }
       } else {
