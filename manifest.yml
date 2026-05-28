@@ -295,6 +295,7 @@ permissions:
     - write:confluence-file
     - storage:app
     - search:confluence
+    - readonly:content.attachment:confluence
   external:
     fetch:
       backend:
