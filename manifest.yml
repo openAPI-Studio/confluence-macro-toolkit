@@ -165,6 +165,21 @@ modules:
       resolver:
         function: resolver
 
+    - key: carousel-slideshow
+      resource: carousel-main
+      icon: resource:carousel-main;icon.svg
+      title: Carousel / Slideshow
+      description: Display images in an interactive slideshow
+      categories:
+        - visuals
+      config:
+        resource: carousel-config
+        viewportSize: fullscreen
+        title: Configure Carousel
+        openOnInsert: true
+      resolver:
+        function: resolver
+
     - key: sticky-note
       resource: sticky-main
       title: Sticky Note
@@ -252,6 +267,10 @@ resources:
     path: static/clock-macro/build
   - key: clock-config
     path: static/clock-config/build
+  - key: carousel-main
+    path: static/carousel-macro/build
+  - key: carousel-config
+    path: static/carousel-config/build
   - key: sticky-main
     path: static/sticky-macro/build
   - key: sticky-config

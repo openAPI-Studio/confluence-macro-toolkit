@@ -4,6 +4,7 @@
   "private": true,
   "license": "Apache-2.0",
   "scripts": {
+    "postinstall": "node scripts/patch-tmp.js",
     "build:all": "npm run build:mermaid-macro && npm run build:mermaid-config && npm run build:markdown-macro && npm run build:markdown-config && npm run build:swagger-macro && npm run build:swagger-config && npm run build:drawio-macro && npm run build:drawio-config && npm run build:poll-macro && npm run build:poll-config && npm run build:mood-macro && npm run build:mood-config && npm run build:graph-macro && npm run build:graph-config",
     "build:mermaid-macro": "cd static/mermaid-macro && npm install && npm run build",
     "build:mermaid-config": "cd static/mermaid-config && npm install && npm run build",
@@ -31,6 +32,8 @@
     "build:spoiler-config": "cd static/spoiler-config && npm install && npm run build",
     "build:clock-macro": "cd static/clock-macro && npm install && npm run build",
     "build:clock-config": "cd static/clock-config && npm install && npm run build",
+    "build:carousel-macro": "cd static/carousel-macro && npm install && npm run build",
+    "build:carousel-config": "cd static/carousel-config && npm install && npm run build",
     "deploy": "npm run build:all && forge deploy",
     "lint": "forge lint"
   },
@@ -40,5 +43,8 @@
   },
   "devDependencies": {
     "@forge/cli": "^12.21.0"
+  },
+  "overrides": {
+    "tmp": "0.2.6"
   }
 }

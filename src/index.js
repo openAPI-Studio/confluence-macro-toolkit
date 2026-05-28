@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS = {
   'plantuml-macro': false,
   'excalidraw-wireframe': false,
   'clock-gadget': true,
+  'carousel-slideshow': true,
   'sticky-note': true,
   'spoiler-reveal': true,
 };
@@ -306,6 +307,58 @@ resolver.define('getSharedLibrary', async () => {
 });
 
 // Carousel functions
+resolver.define('searchPages', async (req) => {
+  const { query } = req.payload;
+  if (!query?.trim()) return { pages: [] };
+  try {
+    const cql = encodeURIComponent(`type=page AND title~"${query.replace(/"/g, '')}"`);
+    const res = await api.asUser().requestConfluence(route`/wiki/rest/api/content/search?cql=${cql}&limit=10`, { method: 'GET' });
+    const data = await res.json();
+    return { pages: (data.results || []).map((p) => ({ id: p.id, title: p.title, space: p._expandable?.space?.split('/').pop() || '' })) };
+  } catch (e) { return { pages: [], error: e.message }; }
+});
+
+resolver.define('getPageAttachments', async (req) => {
+  const { pageId } = req.payload;
+  if (!pageId) return { images: [] };
+  try {
+    const res = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${pageId}/child/attachment?limit=50`, { method: 'GET' });
+    const data = await res.json();
+    const base = data._links?.base || '';
+    const images = (data.results || [])
+      .filter((a) => a.extensions?.mediaType?.startsWith('image/') || a.title?.match(/\.(png|jpe?g|gif|svg|webp|avif|bmp)$/i))
+      .map((a) => ({ id: a.id, name: a.title, url: `${base}${a._links?.download || ''}`, sourcePageId: pageId }));
+    return { images };
+  } catch (e) { return { images: [], error: e.message }; }
+});
+
+resolver.define('copyAttachmentToPage', async (req) => {
+  const { sourcePageId, attachmentId, targetPageId } = req.payload;
+  try {
+    // Get attachment metadata
+    const metaRes = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${sourcePageId}/child/attachment?limit=50`, { method: 'GET' });
+    const metaData = await metaRes.json();
+    const att = (metaData.results || []).find((a) => a.id === attachmentId);
+    if (!att) return { error: 'Attachment not found' };
+    const base = metaData._links?.base || '';
+    const downloadUrl = `${base}${att._links?.download || ''}`;
+    // Download the file
+    const fileRes = await api.asUser().requestConfluence(route`${att._links?.download}`, { method: 'GET' });
+    const arrayBuf = await fileRes.arrayBuffer();
+    const base64 = Buffer.from(arrayBuf).toString('base64');
+    const mime = att.extensions?.mediaType || 'image/png';
+    // Upload to target page
+    const filename = `carousel-${Date.now()}-${att.title}`;
+    const boundary = '----FormBoundary' + Date.now();
+    const body = [`--${boundary}`, `Content-Disposition: form-data; name="file"; filename="${filename}"`, `Content-Type: ${mime}`, `Content-Transfer-Encoding: base64`, '', base64, `--${boundary}--`].join('\r\n');
+    const upRes = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${targetPageId}/child/attachment`, { method: 'POST', headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}`, 'X-Atlassian-Token': 'nocheck' }, body });
+    const upData = await upRes.json();
+    const newAtt = upData.results?.[0] || upData;
+    const newBase = newAtt._links?.base || upData._links?.base || '';
+    return { id: newAtt.id || '', url: `${newBase}${newAtt._links?.download || ''}`, name: filename };
+  } catch (e) { return { error: e.message }; }
+});
+
 resolver.define('uploadImage', async (req) => {
   const { contentId, filename, dataUrl } = req.payload;
   try {
