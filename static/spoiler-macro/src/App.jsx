@@ -97,7 +97,7 @@ export default function App() {
           }}>
             <LockIcon size={buttonText ? 15 : 20} /> {buttonText}
           </div>
-          <div style={{ position: 'relative', zIndex: 1, marginTop: 8, fontSize: 11, color: 'rgba(255,255,255,0.7)' }}>Click to reveal</div>
+
         </div>
       ) : (
         <div style={{ position: 'relative', minHeight: 80 }}>

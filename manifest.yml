@@ -306,3 +306,4 @@ permissions:
       - address: https://embed.diagrams.net
     images:
       - address: '*.atlassian.net'
+      - address: '*.media.atlassian.com'
