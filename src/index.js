@@ -445,7 +445,7 @@ resolver.define('getImageUrls', async (req) => {
     const base = allData._links?.base || '';
 
     const images = attachmentIds.map(id => {
-      const att = (allData.results || []).find(a => a.id === id);
+      const att = (allData.results || []).find(a => a.id === id || a.id === `att${id}` || `att${a.id}` === id);
       if (att) {
         return { id, url: `${base}${att._links?.download || ''}`, name: att.title || id };
       }
