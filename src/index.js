@@ -329,8 +329,7 @@ resolver.define('getPageAttachments', async (req) => {
     const images = [];
     for (const a of imageAtts) {
       try {
-        const dlPath = a._links.download.split('?')[0];
-        const dlRes = await api.asUser().requestConfluence(route`${dlPath}`, { method: 'GET' });
+        const dlRes = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${pageId}/child/attachment/${a.id}/download`, { method: 'GET' });
         const buf = await dlRes.arrayBuffer();
         const mime = a.extensions?.mediaType || 'image/jpeg';
         images.push({ id: a.id, name: a.title, url: `data:${mime};base64,${Buffer.from(buf).toString('base64')}`, sourcePageId: pageId });
@@ -426,8 +425,7 @@ resolver.define('listPageImages', async (req) => {
     const images = [];
     for (const att of imageAtts) {
       try {
-        const dlPath = att._links.download.split('?')[0];
-        const dlRes = await api.asUser().requestConfluence(route`${dlPath}`, { method: 'GET' });
+        const dlRes = await api.asUser().requestConfluence(route`/wiki/rest/api/content/${contentId}/child/attachment/${att.id}/download`, { method: 'GET' });
         const buf = await dlRes.arrayBuffer();
         const mime = att.extensions?.mediaType || 'image/jpeg';
         images.push({ id: att.id, name: att.title, url: `data:${mime};base64,${Buffer.from(buf).toString('base64')}` });
@@ -464,9 +462,10 @@ resolver.define('getImageUrls', async (req) => {
       const att = (allData.results || []).find(a => a.id === id || a.id === `att${id}` || `att${a.id}` === id);
       if (att && att._links?.download) {
         try {
-          const dlPath = att._links.download.split('?')[0];
+          const dlPath = att._links.download.includes('?') ? att._links.download.split('?')[0] + '?api=v2' : att._links.download;
           console.log('Downloading:', dlPath);
-          const dlRes = await api.asApp().requestConfluence(route`${dlPath}`, { method: 'GET' });
+          const attId = att.id.replace('att', '');
+          const dlRes = await api.asApp().requestConfluence(route`/wiki/rest/api/content/${pageId}/child/attachment/${att.id}/download`, { method: 'GET' });
           console.log('Download status:', dlRes.status);
           if (dlRes.status !== 200) { images.push({ id, url: '', name: att.title || id }); continue; }
           const buf = await dlRes.arrayBuffer();
