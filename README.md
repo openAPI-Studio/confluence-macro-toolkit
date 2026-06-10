@@ -1,4 +1,4 @@
-# Confluence Macro Toolkit
+# Confluence Macro Toolkit Lite
 
 A Forge app providing a collection of powerful macros for Atlassian Confluence.
 
@@ -8,22 +8,23 @@ A Forge app providing a collection of powerful macros for Atlassian Confluence.
 |-------|-------------|--------------|
 | **Mermaid Diagram** | Write Mermaid syntax, renders as SVG | Macro config |
 | **Markdown** | Write GitHub-flavored Markdown, renders as HTML | Macro config |
-| **Swagger / OpenAPI** | Paste OpenAPI JSON spec, renders interactive API docs | Macro config |
-| **Draw.io Diagram** | Full draw.io editor, renders diagram on page | Forge Storage + Attachments |
 | **Poll / Vote** | Create polls (single/multi/thumbs/emoji), collect votes | Forge Storage |
 | **Mood** | Floating word cloud / emoji reactions visualization | Forge Storage |
 | **Graph / Chart** | Bar, line, pie, doughnut, area charts with Chart.js | Macro config |
 | **Typewriter** | Animate text with typewriter/word/line/fade effects | Macro config |
-| **PlantUML** | Render UML diagrams from PlantUML syntax | Macro config |
-| **Wireframe / Whiteboard** | Create wireframes and sketches with Excalidraw | Macro config |
 | **Sticky Note** | Colorful sticky notes with handwritten style, pins, and tape | Macro config |
+| **Spoiler / Reveal** | Hidden content revealed on click with fade animation | Macro config |
+| **Clock** | Analog or digital clock with timezone support and patterns | Macro config |
+| **Stopwatch** | Interactive stopwatch with lap tracking (ring/classic/flip) | Macro config |
 
 ## Features
 
 - **Admin Settings** — Toggle individual macros on/off at site level
-- **Draw.io Warning** — External service warning, disabled by default
-- **Theme Support** — Macros use Atlassian Design System CSS variables
+- **Theme Support** — All macros use Atlassian Design System CSS variables (light + dark mode)
 - **Icons** — Custom SVG icons for each macro in editor and admin
+- **Live Preview** — Most config panels include split-view live preview
+- **Patterns** — Visual themes (Solid, Gradient, Dark, Minimal, Neon) for Clock and Stopwatch
+- **Color Palette** — 10-color accent palette across compatible macros
 
 ## Project Structure
 
@@ -37,10 +38,6 @@ confluence-macro-toolkit/
     ├── mermaid-config/             # Mermaid code editor + preview
     ├── markdown-macro/             # Markdown render view
     ├── markdown-config/            # Markdown editor + preview
-    ├── swagger-macro/              # Swagger UI render
-    ├── swagger-config/             # JSON spec editor
-    ├── drawio-macro/               # Draw.io viewer (embed.diagrams.net)
-    ├── drawio-config/              # Draw.io editor (embed.diagrams.net)
     ├── poll-macro/                 # Poll voting UI + results
     ├── poll-config/                # Poll creation (type/options/settings)
     ├── mood-macro/                 # Floating mood visualization
@@ -49,12 +46,14 @@ confluence-macro-toolkit/
     ├── graph-config/               # Chart editor + live preview
     ├── typewriter-macro/           # Animated text render
     ├── typewriter-config/          # Text + style + speed + theme
-    ├── plantuml-macro/             # PlantUML SVG render
-    ├── plantuml-config/            # PlantUML code editor + preview
-    ├── excalidraw-macro/           # Excalidraw SVG render
-    ├── excalidraw-config/          # Excalidraw drawing editor
     ├── sticky-macro/               # Sticky note render
     ├── sticky-config/              # Sticky note editor (color, size, font, pin/tape)
+    ├── spoiler-macro/              # Spoiler/reveal content render
+    ├── spoiler-config/             # Spoiler editor (title, style, animation)
+    ├── clock-macro/                # Clock render (analog/digital)
+    ├── clock-config/               # Clock config (timezone, pattern, color)
+    ├── stopwatch-macro/            # Stopwatch render (ring/classic/flip)
+    ├── stopwatch-config/           # Stopwatch config (style, color, label)
     └── admin-page/                 # Site-level macro toggle settings
 ```
 
@@ -77,175 +76,112 @@ forge install
 ## Macro Details
 
 ### Mermaid Diagram
-**What it does:** Lets you write Mermaid diagram syntax and renders it as a visual diagram (flowcharts, sequence diagrams, Gantt charts, etc.) directly on your Confluence page.
+Lets you write Mermaid diagram syntax and renders it as a visual diagram (flowcharts, sequence diagrams, Gantt charts, etc.) directly on your Confluence page.
 
-**How to use:**
-1. Type `/Mermaid` in the editor
-2. A fullscreen editor opens with a code panel (left) and live preview (right)
-3. Write your Mermaid syntax (e.g., `graph TD; A-->B; B-->C;`)
-4. See the diagram update in real-time as you type
-5. Click Save — the diagram renders on the published page
+- Fullscreen split-view editor with live preview
+- Templates for common diagram types (flowchart, sequence, class, state, Gantt, pie, ER, git graph)
+- Export to SVG or PNG
+- Zoom controls and height/zoom settings
+- Dark mode aware rendering
 
 ---
 
 ### Markdown
-**What it does:** Renders GitHub-flavored Markdown content on your Confluence page, supporting tables, code blocks, strikethrough, task lists, and more.
+Renders GitHub-flavored Markdown content on your Confluence page.
 
-**How to use:**
-1. Type `/Markdown` in the editor
-2. A fullscreen editor opens with a text panel (left) and live preview (right)
-3. Write your Markdown content
-4. Click Save — the formatted content renders on the published page
-
----
-
-### Swagger / OpenAPI
-**What it does:** Renders interactive API documentation from an OpenAPI/Swagger JSON specification, complete with endpoint details, request/response schemas, and try-it-out functionality.
-
-**How to use:**
-1. Type `/Swagger` in the editor
-2. Paste your OpenAPI 3.0 JSON spec into the editor
-3. The editor validates your JSON in real-time (shows errors if invalid)
-4. Click Save — the full Swagger UI renders on the published page
-
----
-
-### Draw.io Diagram
-**What it does:** Provides a full draw.io diagramming editor embedded in Confluence. Create flowcharts, architecture diagrams, wireframes, and more with draw.io's complete toolset.
-
-**How to use:**
-1. Type `/Draw.io` in the editor
-2. The draw.io editor opens in fullscreen
-3. Create your diagram using draw.io's tools
-4. Click Save & Exit — the diagram renders on the published page
-5. Edit again to modify — all pages and layers are preserved
-
-⚠️ **Note:** This macro uses `embed.diagrams.net` (external service). Must be enabled by an admin in Macro Toolkit Settings.
+- Split-view editor with live preview
+- Tables, code blocks (with syntax highlighting), strikethrough, task lists
+- Min-height and default zoom settings
 
 ---
 
 ### Poll / Vote
-**What it does:** Creates interactive polls that users can vote on directly from the published page. Supports multiple poll types and shows real-time results with voter tracking.
+Creates interactive polls that users can vote on directly from the published page.
 
-**How to use:**
-1. Type `/Poll` in the editor
-2. Choose a poll type:
-   - **Single Answer** — radio buttons, one choice
-   - **Multiple Answers** — checkboxes, multiple choices
-   - **Thumbs Up/Down** — 👍👎 toggle buttons
-   - **Emoji Reactions** — custom emoji toggle buttons
-3. Enter your question and options (not needed for thumbs/emoji)
-4. Optionally set alignment and allow vote revocation
-5. Click Save — users can vote on the published page
-6. Click vote counts to see who voted for what
+- **Single Answer** — radio buttons, one choice
+- **Multiple Answers** — checkboxes, multiple choices
+- **Thumbs Up/Down** — 👍👎 toggle buttons
+- **Emoji Reactions** — custom emoji toggle buttons
+- Real-time results with voter display names
+- Allow/disallow vote revocation
 
 ---
 
 ### Mood
-**What it does:** Creates a live "mood board" visualization where team members can express their mood. Entries float and grow larger as more people vote for them, creating a dynamic word cloud effect.
+Creates a live "mood board" visualization where team members can express their mood.
 
-**How to use:**
-1. Type `/Mood` in the editor
-2. Choose a type:
-   - **Custom Text** — users type their own word/phrase (max 20 chars)
-   - **Emoji Set** — users pick from preset emojis
-3. Optionally add a title
-4. Click Save — on the published page:
-   - Custom: users type a mood and submit, or click existing floating words to vote
-   - Emoji: users click emoji buttons to vote
-5. More votes = bigger text/emoji in the visualization
+- **Custom Text** — users type their own word/phrase (max 20 chars)
+- **Emoji Set** — users pick from preset emojis
+- Entries float and grow larger with more votes (word cloud effect)
+- Optional title
 
 ---
 
 ### Graph / Chart
-**What it does:** Creates interactive charts and graphs using Chart.js. Supports multiple chart types with customizable colors, datasets, and display options.
+Creates interactive charts and graphs using Chart.js.
 
-**How to use:**
-1. Type `/Graph` in the editor
-2. A fullscreen editor opens with controls (left) and live preview (right)
-3. Select chart type: Bar, Line, Pie, Doughnut, or Area
-4. Enter labels (comma-separated, e.g., `Jan, Feb, Mar, Apr`)
-5. Add datasets with name, color, and values
-   - For Pie/Doughnut: one set of values + per-slice colors
-   - For others: multiple datasets with individual colors
-6. Toggle legend and grid visibility
-7. Click Save — the interactive chart renders on the published page (hover for tooltips)
+- Chart types: Bar, Line, Pie, Doughnut, Area
+- Multiple datasets with individual colors
+- Toggle legend and grid visibility
+- Hover tooltips on published page
+- Live preview in config
 
 ---
 
 ### Typewriter
-**What it does:** Animates text with a ChatGPT-style typing effect when the page loads. Choose from multiple animation styles and visual themes to create engaging content reveals.
+Animates text with a typing effect when the page loads.
 
-**How to use:**
-1. Type `/Typewriter` in the editor
-2. Choose a render style:
-   - **Typewriter** — letter by letter with blinking cursor
-   - **Word by word** — reveals one word at a time
-   - **Line by line** — reveals one line at a time
-   - **Fade in** — entire text fades in smoothly
-3. Choose speed: Fast, Medium, Slow, or Very Slow
-4. Choose a theme: None, Terminal, Retro Monitor, Matrix, Paper, Blueprint, or Hacker
-5. Toggle blinking cursor (stays after animation) and line numbers
-6. Watch the live preview to see your settings in action
-7. Enter your content and click Save
-8. The animation plays every time someone views the page
-
----
-
-### PlantUML
-**What it does:** Renders UML diagrams (sequence, class, activity, component, state, etc.) from PlantUML text syntax. Uses the public PlantUML server to convert text to SVG.
-
-**How to use:**
-1. Enable the macro in Admin Settings (disabled by default)
-2. Type `/PlantUML` in the editor
-3. A fullscreen editor opens with a code panel (left) and live preview (right)
-4. Write your PlantUML syntax (e.g., `@startuml` ... `@enduml`)
-5. Preview updates automatically as you type (debounced 800ms)
-6. Click Save — the rendered SVG is stored and displays on the published page
-
-⚠️ **Note:** This macro uses `plantuml.com` (external service) to render diagrams during editing. The rendered SVG is stored locally — no server call on page view. Must be enabled by an admin in Macro Toolkit Settings.
-
----
-
-### Wireframe / Whiteboard
-**What it does:** Provides a full Excalidraw drawing editor for creating wireframes, sketches, diagrams, and whiteboard-style content. Hand-drawn aesthetic, infinite canvas, all rendered client-side.
-
-**How to use:**
-1. Type `/Wireframe` in the editor
-2. A fullscreen Excalidraw canvas opens
-3. Use the toolbar to draw shapes, add text, arrows, freehand sketches
-4. Click Save — the drawing exports as SVG and renders on the published page
-5. Edit again to modify — all elements are preserved
-
-**Features:**
-- Shapes: rectangle, ellipse, diamond, arrow, line, freehand
-- Text with various sizes
-- Colors, fill styles, stroke styles
-- Infinite canvas with zoom/pan
-- Hand-drawn sketch aesthetic
-- No external service required — fully offline
-- ~7.5MB bundle (Excalidraw library)
-
-**Limitations:**
-- Diagram data is stored in macro config (inline with page content), which has a ~200KB size limit. Very complex wireframes with many elements may exceed this. For heavy diagrams, consider using the Draw.io macro instead, which uses Forge Storage + attachments.
-- Community shape library browser is redirected through an in-app panel due to Forge sandbox restrictions.
+- Styles: Typewriter (letter by letter), Word by word, Line by line, Fade in
+- Speed: Fast, Medium, Slow, Very Slow
+- Themes: None, Terminal, Retro Monitor, Matrix, Paper, Blueprint, Hacker
+- Optional blinking cursor and line numbers
+- Live preview in config
 
 ---
 
 ### Sticky Note
-**What it does:** Adds colorful sticky notes to your Confluence page with a handwritten poster-note aesthetic. Customize colors, fonts, sizes, and attachment styles (tape or pin).
+Adds colorful sticky notes to your Confluence page with a handwritten aesthetic.
 
-**How to use:**
-1. Type `/Sticky` in the editor
-2. Choose your options:
-   - **Color** — 7 presets (yellow, orange, pink, green, blue, purple, white) + custom color picker
-   - **Size** — Small, Medium, Large, Full Width
-   - **Font** — Handwritten (default), Sans-serif, Serif, Monospace
-   - **Attachment** — Tape (with color options), Pin (SVG pushpin), or None
-   - **Layout** — Text alignment (left/center/right), vertical position (top/middle/bottom), line spacing (tight/normal/loose)
-3. Write your note text
-4. See the live preview update as you change settings
-5. Click Save — the styled sticky note renders on the published page
+- 7 color presets + custom color picker
+- Sizes: Small, Medium, Large, Full Width
+- Fonts: Handwritten, Sans-serif, Serif, Monospace
+- Attachments: Tape (with color options), Pin, or None
+- Text alignment and spacing controls
+- Live preview
+
+---
+
+### Spoiler / Reveal
+Hides content behind a clickable bar that reveals text with animation.
+
+- Customizable reveal title text
+- Fade animation on reveal
+- Configurable styling
+
+---
+
+### Clock
+Displays analog or digital clocks with timezone support.
+
+- Types: Analog (canvas-drawn) or Digital
+- 15 timezone presets (UTC, major cities worldwide)
+- 5 patterns: Solid, Gradient, Dark, Minimal, Neon
+- 10-color accent palette
+- Multi-clock support (1-4 clocks side by side)
+- Alignment options (left, center, right)
+- Custom labels per clock
+
+---
+
+### Stopwatch
+Interactive stopwatch with lap tracking and multiple visual styles.
+
+- Styles: Ring (circular progress), Classic (button controls), Flip (digit cards)
+- Start/Pause/Resume/Reset/Lap controls
+- Lap history with best/worst highlighting
+- 5 patterns: Solid, Gradient, Dark, Minimal, Neon
+- 10-color accent palette
+- Optional label
 
 ---
 
@@ -254,7 +190,6 @@ forge install
 Access via: **Confluence Admin → Apps → Macro Toolkit Settings**
 
 - Toggle each macro on/off for the entire site
-- Draw.io disabled by default with external service warning
 - Settings stored in Forge Storage
 
 ## Permissions
@@ -262,26 +197,15 @@ Access via: **Confluence Admin → Apps → Macro Toolkit Settings**
 | Scope | Purpose |
 |-------|---------|
 | `read:confluence-content.summary` | Read page metadata |
-| `read:confluence-content.all` | Read attachments |
 | `read:confluence-user` | Resolve voter display names |
 | `write:confluence-content` | Create/update content |
-| `write:confluence-file` | Upload attachments |
-| `storage:app` | Forge Storage for polls, mood, settings, draw.io |
-
-## External Dependencies
-
-| Service | Used By | Purpose |
-|---------|---------|---------|
-| `embed.diagrams.net` | Draw.io macro | Editor + viewer |
-| `www.plantuml.com` | PlantUML macro | Diagram rendering during editing |
-
-All other macros render entirely client-side with bundled libraries.
+| `storage:app` | Forge Storage for polls, mood, settings |
 
 ## Development
 
 ```bash
 # Build a single macro
-cd static/mermaid-macro && npm install && npm run dev
+cd static/mermaid-macro && npm install && npm run build
 
 # Use Forge tunnel for live reload
 forge tunnel
@@ -289,16 +213,6 @@ forge tunnel
 # View logs
 forge logs
 ```
-
-## Adding a New Macro
-
-1. Create `static/<macro-name>/` and `static/<macro-name>-config/`
-2. Add macro entry under `modules.macro` in `manifest.yml`
-3. Add `resources` entries
-4. Add build scripts to root `package.json`
-5. Add to admin settings MACROS array
-6. Add to DEFAULT_SETTINGS in resolver
-7. Build & deploy
 
 ## Requirements
 
@@ -308,14 +222,12 @@ forge logs
 
 ## Known Issues & Limitations
 
-| Issue | Affected Macro | Details |
-|-------|---------------|---------|
-| **Dark mode background** | All macros | Forge's iframe container has a white background in dark mode. This is a platform limitation — the `ForgeExtensionContainer` uses `var(--ds-surface, #FFFFFF)` which doesn't always propagate in dark themes. Macro content inside adapts correctly. |
-| **Draw.io multi-page export** | Draw.io | Only the currently active page is exported as SVG. Draw.io's embed protocol doesn't support per-page export via `pageId`. All pages are preserved in XML for re-editing. |
-| **Excalidraw library browser** | Wireframe | The community shape library popup is blocked by Forge's iframe sandbox (`allow-popups` not set). All core drawing tools work normally. |
-| **Excalidraw fonts** | Wireframe | Custom Excalidraw fonts (Virgil, Cascadia) may not load due to CSP font-src restrictions. Falls back to system fonts — drawings still render correctly. |
-| **PlantUML rendering** | PlantUML | Requires internet access during editing (calls plantuml.com). Published page renders stored SVG offline. |
-| **Draw.io rendering** | Draw.io | Requires internet access for both editing and viewing (uses embed.diagrams.net). |
-| **Macro config size limit** | All macros | Forge macro config has a payload size limit. Very complex Excalidraw drawings or large SVGs may hit this limit. Draw.io uses Forge Storage as a workaround. |
-| **Ghost macros after rename** | All macros | Renaming or removing macro keys leaves "ghost" entries in the editor's macro browser. Fix: `forge uninstall` then `forge install`. |
-| **Swagger inline styles** | Swagger | swagger-ui-react uses inline styles which may trigger CSP warnings in console. Functionality is not affected since `unsafe-inline` is enabled. |
+| Issue | Details |
+|-------|---------|
+| **Dark mode container** | Forge's iframe container may show white background in dark mode. Macro content adapts correctly. |
+| **Macro config size limit** | Forge macro config has a payload size limit (~200KB). Very complex Mermaid/Markdown content may hit this. |
+| **Ghost macros after rename** | Renaming/removing macro keys leaves stale entries in editor. Fix: `forge uninstall` then `forge install`. |
+
+## License
+
+Apache-2.0
