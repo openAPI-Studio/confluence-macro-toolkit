@@ -10,7 +10,7 @@ export default function App() {
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    invoke('getSettings').then((s) => { if (s['mood-macro'] === false) setDisabled(true); });
+    invoke('getSettings').then((s) => { if (s['mood-macro'] === false) setDisabled(true); }).catch(() => {});
     view.getContext().then(async (ctx) => {
       const config = ctx.extension.config || {};
       if (config.moodKey) {
@@ -18,8 +18,7 @@ export default function App() {
         setMood(data);
         if (data.myVote) setMyVote(data.myVote);
       }
-      setLoading(false);
-    });
+    }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const getMoodKey = async () => {
@@ -30,12 +29,15 @@ export default function App() {
   const handleVote = async (value) => {
     if (voting || !value.trim()) return;
     setVoting(true);
-    const moodKey = await getMoodKey();
-    const updated = await invoke('castMoodVote', { moodKey, value: value.trim() });
-    setMood(updated);
-    setMyVote(value.trim());
-    setInput('');
-    setVoting(false);
+    try {
+      const moodKey = await getMoodKey();
+      const updated = await invoke('castMoodVote', { moodKey, value: value.trim() });
+      setMood(updated);
+      setMyVote(value.trim());
+      setInput('');
+    } finally {
+      setVoting(false);
+    }
   };
 
   if (loading) return <div style={{ padding: 16 }}>Loading...</div>;

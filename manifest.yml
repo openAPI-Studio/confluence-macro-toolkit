@@ -14,6 +14,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-mermaid
 
     - key: markdown-renderer
       resource: markdown-main
@@ -29,6 +31,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-markdown
 
     - key: swagger-api-docs
       resource: swagger-main
@@ -44,6 +48,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-swagger
 
     - key: drawio-diagram
       resource: drawio-main
@@ -59,6 +65,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-drawio
 
     - key: poll-vote
       resource: poll-main
@@ -74,6 +82,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-poll
 
     - key: mood-macro
       resource: mood-main
@@ -89,6 +99,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-mood
 
     - key: graph-chart
       resource: graph-main
@@ -104,6 +116,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-graph
 
     - key: typewriter-macro
       resource: typewriter-main
@@ -119,6 +133,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-typewriter
 
     - key: plantuml-macro
       resource: plantuml-main
@@ -134,6 +150,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-plantuml
 
     - key: excalidraw-wireframe
       resource: excalidraw-main
@@ -149,6 +167,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-excalidraw
 
     - key: clock-gadget
       resource: clock-main
@@ -164,6 +184,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-clock
 
     - key: carousel-slideshow
       resource: carousel-main
@@ -179,6 +201,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-carousel
 
     - key: sticky-note
       resource: sticky-main
@@ -193,6 +217,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-sticky
 
     - key: spoiler-reveal
       resource: spoiler-main
@@ -207,6 +233,8 @@ modules:
         openOnInsert: true
       resolver:
         function: resolver
+      adfExport:
+        function: export-spoiler
 
   confluence:globalSettings:
     - key: macro-settings
@@ -219,6 +247,34 @@ modules:
   function:
     - key: resolver
       handler: index.handler
+    - key: export-mermaid
+      handler: adfExport.exportMermaid
+    - key: export-markdown
+      handler: adfExport.exportMarkdown
+    - key: export-swagger
+      handler: adfExport.exportSwagger
+    - key: export-drawio
+      handler: adfExport.exportDrawio
+    - key: export-poll
+      handler: adfExport.exportPoll
+    - key: export-mood
+      handler: adfExport.exportMood
+    - key: export-graph
+      handler: adfExport.exportGraph
+    - key: export-typewriter
+      handler: adfExport.exportTypewriter
+    - key: export-plantuml
+      handler: adfExport.exportPlantuml
+    - key: export-excalidraw
+      handler: adfExport.exportExcalidraw
+    - key: export-clock
+      handler: adfExport.exportClock
+    - key: export-carousel
+      handler: adfExport.exportCarousel
+    - key: export-sticky
+      handler: adfExport.exportSticky
+    - key: export-spoiler
+      handler: adfExport.exportSpoiler
 
 resources:
   - key: mermaid-main

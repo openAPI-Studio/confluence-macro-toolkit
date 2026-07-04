@@ -11,7 +11,7 @@ export default function App() {
   const [voting, setVoting] = useState(false);
 
   useEffect(() => {
-    invoke('getSettings').then((s) => { if (s['poll-vote'] === false) setDisabled(true); });
+    invoke('getSettings').then((s) => { if (s['poll-vote'] === false) setDisabled(true); }).catch(() => {});
     view.getContext().then(async (ctx) => {
       const config = ctx.extension.config || {};
       if (config.pollKey) {
@@ -22,8 +22,7 @@ export default function App() {
           setSelected(data.myVote);
         }
       }
-      setLoading(false);
-    });
+    }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   const getPollKey = async () => {
@@ -35,29 +34,35 @@ export default function App() {
     if (selected === null || !poll || voting) return;
     if (poll.pollType === 'multi' && Array.isArray(selected) && selected.length === 0) return;
     setVoting(true);
-    const pollKey = await getPollKey();
-    const updated = await invoke('castVote', { pollKey, optionIndex: selected });
-    setPoll(updated);
-    setHasVoted(true);
-    setVoting(false);
+    try {
+      const pollKey = await getPollKey();
+      const updated = await invoke('castVote', { pollKey, optionIndex: selected });
+      setPoll(updated);
+      setHasVoted(true);
+    } finally {
+      setVoting(false);
+    }
   };
 
   const handleThumbsClick = async (i) => {
     if (voting) return;
     setVoting(true);
-    const pollKey = await getPollKey();
-    if (selected === i) {
-      const updated = await invoke('revokeVote', { pollKey });
-      setPoll(updated);
-      setSelected(null);
-      setHasVoted(false);
-    } else {
-      const updated = await invoke('castVote', { pollKey, optionIndex: i });
-      setPoll(updated);
-      setSelected(i);
-      setHasVoted(true);
+    try {
+      const pollKey = await getPollKey();
+      if (selected === i) {
+        const updated = await invoke('revokeVote', { pollKey });
+        setPoll(updated);
+        setSelected(null);
+        setHasVoted(false);
+      } else {
+        const updated = await invoke('castVote', { pollKey, optionIndex: i });
+        setPoll(updated);
+        setSelected(i);
+        setHasVoted(true);
+      }
+    } finally {
+      setVoting(false);
     }
-    setVoting(false);
   };
 
   const handleRevoke = async () => {
